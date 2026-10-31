@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+node_modules/
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Local configuration and runtime data
+/input/*.json
+!/input/*.example.json
+/input/seen_notes.txt
+/output/*
+!/output/.gitkeep
+/data/
+/reports/
+/runs/
+*.db
+*.sqlite
+*.sqlite3
+
+# Credentials, logs, and temporary files
+*.key
+*.pem
+*.p12
+*.pfx
+*credentials*.json
+*cookies*.json
+*.log
+*.tmp
+*.trace
+*.zip
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "endpoint_url": "",
+  "model": "",
+  "credential_id": "social-trend-llm",
+  "auth_header": "Authorization",
+  "auth_scheme": "Bearer",
+  "audio_model": "",
+  "max_images_per_note": 6,
+  "max_video_frames": 6,
+  "frame_interval_seconds": 3,
+  "max_image_edge": 1024,
+  "max_video_seconds": 300,
+  "request_timeout_seconds": 120,
+  "ffmpeg_bin": ""
+}

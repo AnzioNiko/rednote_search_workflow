@@ -1,0 +1,28 @@
+{
+  "search": {
+    "limit": 20,
+    "sort": "most-liked",
+    "note_type": "all",
+    "publish_time": "half-year",
+    "scope": "unseen",
+    "location": "all"
+  },
+  "users": {
+    "limit": 10
+  },
+  "details": {
+    "limit_per_user": 20,
+    "include_creator_note_detail": false
+  },
+  "csv": {
+    "note_filter": {
+      "enabled": false,
+      "groups": []
+    }
+  },
+  "deduplication": {
+    "enabled": true,
+    "seen_file": "seen_notes.txt"
+  },
+  "timeout_seconds": 180
+}

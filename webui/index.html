@@ -1,0 +1,1424 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>社媒热度工作台</title>
+  <style>
+    :root{--ink:#20242c;--muted:#737b88;--line:#e8ebef;--paper:#f5f6f8;--card:#fff;--red:#f0445e;--red-soft:#fff0f2;--green:#16855b;--amber:#9c6811;--shadow:0 12px 38px rgba(25,35,50,.06)}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.55 Inter,"Segoe UI","Microsoft YaHei",sans-serif}
+    button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}
+    .topbar{height:74px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:5}
+    .brand{display:flex;align-items:center;gap:12px}.brand-mark{width:38px;height:38px;border-radius:13px;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px;box-shadow:0 6px 16px #f0445e44}.brand-title{font-weight:750;font-size:16px;letter-spacing:.2px}.brand-sub{font-size:12px;color:var(--muted);margin-top:1px}
+    .top-actions{display:flex;gap:10px;align-items:center}.local-chip,.state-chip{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;background:#f3f5f7;color:#5d6572;font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:#26a269}
+    .layout{max-width:1320px;margin:26px auto;padding:0 24px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:22px}.sidebar{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;height:fit-content;position:sticky;top:96px;box-shadow:var(--shadow)}
+    .nav-label{font-size:11px;text-transform:uppercase;letter-spacing:1.1px;color:#9aa1ab;padding:9px 11px 6px}.nav-button{border:0;background:transparent;color:#5d6572;width:100%;text-align:left;padding:11px 12px;border-radius:11px;display:flex;align-items:center;gap:11px;margin:2px 0}.nav-button:hover{background:#f7f8fa}.nav-button.active{background:var(--red-soft);color:#cf2e49;font-weight:700}.nav-icon{width:18px;text-align:center;font-size:15px}.nav-text{flex:1;min-width:0}.nav-work-indicator{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:#aeb5bf;box-shadow:0 0 0 3px #edf0f3}.nav-work-indicator.working{background:#e49a18;box-shadow:0 0 0 3px #fff2d8;animation:nav-work-pulse 1.25s ease-in-out infinite}.nav-work-indicator.succeeded{background:#16855b;box-shadow:0 0 0 3px #e8f7ef}.nav-work-indicator.partial{background:#d48612;box-shadow:0 0 0 3px #fff3dd}.nav-work-indicator.failed{background:#d53f57;box-shadow:0 0 0 3px #ffebef}@keyframes nav-work-pulse{0%,100%{opacity:.55;transform:scale(.78)}50%{opacity:1;transform:scale(1.08)}}@media(prefers-reduced-motion:reduce){.nav-work-indicator.working{animation:none;opacity:1;transform:none}}.side-foot{border-top:1px solid var(--line);margin-top:14px;padding:13px 11px 4px;color:#8b929c;font-size:11px}
+    main{min-width:0}.page{display:none}.page.active{display:block}.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin:2px 2px 19px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.3px;color:var(--red);font-weight:700}.page-title{margin:4px 0 0;font-size:25px;line-height:1.2;letter-spacing:-.4px}.page-desc{margin:7px 0 0;color:var(--muted);font-size:13px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px;margin-bottom:16px}.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:17px}.card-title{margin:0;font-size:15px;font-weight:750}.card-desc{margin:4px 0 0;color:var(--muted);font-size:12px}.section-tag{color:#848c97;font-size:11px;background:#f5f6f8;border-radius:7px;padding:5px 8px;white-space:nowrap}
+    .grid-two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.input-row{display:flex;gap:8px}.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}.field label{font-size:12px;color:#59616d;font-weight:650}.field small{font-size:11px;color:#8a929e}.text-input,.select-input{height:39px;border:1px solid #dfe3e8;border-radius:9px;padding:0 11px;background:#fff;color:var(--ink);outline:none;width:100%}.text-input:focus,.select-input:focus{border-color:#f28b9b;box-shadow:0 0 0 3px #f0445e16}.text-input::placeholder{color:#aab0b8}
+    .btn{border:1px solid transparent;border-radius:9px;padding:9px 13px;font-size:12px;font-weight:700;white-space:nowrap;transition:.16s}.btn-primary{background:var(--red);color:#fff;box-shadow:0 5px 13px #f0445e2b}.btn-primary:hover{background:#d9334e;transform:translateY(-1px)}.btn-secondary{background:#fff;border-color:#dfe3e8;color:#444d59}.btn-secondary:hover{background:#f7f8fa}.btn-quiet{background:transparent;color:#747c87;padding:7px 9px}.btn-quiet:hover{background:#f2f3f5}.btn-danger{color:#c9364e;background:#fff3f4;border-color:#ffe0e4}.btn-small{padding:6px 9px;font-size:11px}.actions{display:flex;gap:8px;align-items:center}
+    .keyword-list{display:flex;flex-wrap:wrap;gap:8px;min-height:43px;margin-top:14px}.keyword-chip{display:inline-flex;align-items:center;gap:8px;background:#fff4f5;border:1px solid #ffdce2;color:#bd3049;border-radius:999px;padding:7px 8px 7px 12px;font-size:12px;font-weight:650}.chip-remove{border:0;background:transparent;color:#bd6877;font-size:16px;line-height:1;padding:0 2px}.empty-hint{color:#a2a8b1;font-size:12px;padding:10px 2px}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:collapse;min-width:560px}.table th{text-align:left;color:#828a95;background:#fafbfc;font-size:11px;font-weight:700;padding:10px 12px;border-bottom:1px solid var(--line)}.table td{padding:9px 10px;border-bottom:1px solid #f0f1f3}.table tr:last-child td{border-bottom:0}.table .text-input{height:34px;font-size:12px}.table .name-col{width:27%}.table .url-col{width:62%}.table .action-col{width:11%;text-align:right}.row-count{font-size:11px;color:#9299a3}
+    .settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 18px}.field select{appearance:auto}.check-row{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fafbfc;margin:5px 0 14px}.check-row input{accent-color:var(--red);margin-top:3px}.check-title{font-weight:650;font-size:12px}.check-note{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+    .sticky-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:14px;padding:11px 14px;position:sticky;bottom:14px;box-shadow:0 8px 26px #1e2a3d12;backdrop-filter:blur(12px);z-index:3}.save-state{color:#9299a3;font-size:11px}.save-state.ok{color:var(--green)}.save-state.error{color:#c9364e}
+    .notice{border-radius:10px;padding:11px 13px;font-size:12px;margin:12px 0}.notice.info{background:#f4f7fb;color:#566579;border:1px solid #e4ebf3}.notice.warn{background:#fff8e9;color:#845b13;border:1px solid #f3e5c7}.notice.error{background:#fff0f2;color:#a52b40;border:1px solid #ffd5dc;white-space:pre-wrap;overflow-wrap:anywhere}
+    .status-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}.metric{background:#fafbfc;border:1px solid var(--line);border-radius:12px;padding:14px}.metric-label{font-size:11px;color:#89919b}.metric-value{font-size:19px;font-weight:750;margin-top:5px}.run-actions{display:flex;gap:10px;align-items:center;margin-top:16px}.run-state{padding:5px 9px;border-radius:999px;background:#f3f5f7;color:#626b77;font-size:11px;font-weight:700}.run-state.running{background:#fff4de;color:#91600c}.run-state.succeeded{background:#e9f8f0;color:#178251}.run-state.partial,.run-state.failed{background:#fff0f2;color:#c9364e}.pre{white-space:pre-wrap;word-break:break-word;background:#171b22;color:#d9e0e9;border-radius:11px;padding:14px;min-height:70px;max-height:330px;overflow:auto;font:11px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}.link{color:#c9364e;text-decoration:none;font-weight:650}.link:hover{text-decoration:underline}.aggregate-table{min-width:1480px}.aggregate-table td{vertical-align:top;max-width:280px}.aggregate-table .title-cell{min-width:220px;white-space:normal}.aggregate-table .date-cell{min-width:132px;white-space:nowrap}.aggregate-table .content-cell{min-width:250px;max-width:360px;white-space:normal}.aggregate-table .content-preview{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;white-space:normal;overflow-wrap:anywhere}.aggregate-actions{margin:12px 0;display:flex;gap:8px;align-items:center}.aggregate-actions select{flex:1;min-width:0}.aggregate-meta{font-size:12px;color:var(--muted);margin:10px 0}.aggregate-download{margin:10px 0}
+    .toast{position:fixed;right:24px;bottom:24px;padding:12px 16px;background:#20242c;color:#fff;border-radius:10px;box-shadow:var(--shadow);z-index:10;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;max-width:380px;font-size:12px}.toast.show{opacity:1;transform:translateY(0)}
+    .workflow-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.workflow-toolbar .select-input{max-width:360px}.workflow-task{border:1px solid var(--line);border-radius:12px;padding:15px;margin:12px 0;background:#fcfcfd}.workflow-task-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.workflow-task-title{font-weight:750}.workflow-checks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;max-height:190px;overflow:auto;border:1px solid var(--line);border-radius:9px;padding:10px}.workflow-check{display:flex;align-items:center;gap:7px;font-size:12px;overflow-wrap:anywhere}.workflow-check input{accent-color:var(--red)}.workflow-group{margin:12px 0}.workflow-group-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}.workflow-days{display:flex;gap:12px;flex-wrap:wrap}.workflow-days select{width:150px}
+    .sticky-actions[hidden],.workflow-days[hidden]{display:none}
+    .csv-filter-panel{border-top:1px solid var(--line);margin-top:16px;padding-top:16px}.csv-filter-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.csv-filter-title{margin:0;font-size:13px;font-weight:750}.csv-filter-switch{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #dfe3e8;border-radius:9px;background:#fff;font-size:12px;font-weight:700;white-space:nowrap}.csv-filter-switch input{accent-color:var(--red)}.csv-filter-editor{margin-top:14px}.csv-filter-group{background:#f8f9fb;border:1px solid #e9edf2;border-radius:10px;padding:12px}.csv-filter-group-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.csv-filter-group-title{font-size:12px;font-weight:750}.csv-filter-group-note{font-size:11px;color:var(--muted);margin-left:7px;font-weight:400}.csv-filter-condition{display:grid;grid-template-columns:minmax(112px,.85fr) minmax(118px,.85fr) minmax(130px,1fr) 34px;align-items:center;gap:8px}.csv-filter-condition .select-input,.csv-filter-condition .text-input{height:35px;font-size:12px}.csv-filter-and{display:block;color:#8b939e;font-size:11px;font-weight:700;margin:7px 0}.csv-filter-or{display:flex;align-items:center;gap:10px;color:#a05b1e;font-size:11px;font-weight:750;margin:10px 0}.csv-filter-or::before,.csv-filter-or::after{content:"";height:1px;flex:1;background:#eadfce}.csv-filter-expression{margin-top:12px;padding:10px 12px;border-radius:9px;background:#f4f7fb;color:#536274;font-size:12px;overflow-wrap:anywhere}.csv-filter-actions{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+    @media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{position:static;display:flex;overflow:auto;padding:8px}.nav-label,.side-foot{display:none}.nav-button{width:auto;white-space:nowrap;margin:0 2px}.grid-two{grid-template-columns:1fr}}
+    @media(max-width:600px){.topbar{padding:0 15px}.layout{padding:0 12px;margin:15px auto}.page-head{align-items:flex-start;flex-direction:column}.settings-grid,.status-grid{grid-template-columns:1fr}.card{padding:15px}.top-actions .local-chip{display:none}.csv-filter-head{align-items:stretch;flex-direction:column}.csv-filter-switch{justify-content:center}.csv-filter-condition{grid-template-columns:1fr 1fr;padding-bottom:10px;border-bottom:1px solid #eceff3}.csv-filter-condition .filter-value{grid-column:1/2}.csv-filter-condition .filter-remove{grid-column:2/3;justify-self:end}}
+
+    .stage-card-content{flex:1;min-width:0}.stage-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .run-subsection{border-top:1px solid var(--line);padding-top:16px;margin-top:14px}
+    .run-subsection-head{margin-bottom:12px}
+    .run-subsection-title{margin:0;font-size:13px;font-weight:750}
+    .run-subsection .settings-grid{grid-template-columns:minmax(0,1fr);max-width:720px}
+    .csv-table{min-width:2700px;table-layout:fixed}.csv-table th{vertical-align:middle;white-space:nowrap;line-height:1.4}.csv-table td{padding:10px 11px;vertical-align:top;white-space:normal}.csv-cell{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;overflow:hidden;overflow-wrap:anywhere;line-height:1.55}.csv-cell-single{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.csv-col-topic{width:100px}.csv-col-title{width:190px}.csv-col-title .csv-cell{-webkit-line-clamp:3}.csv-col-author{width:110px}.csv-col-link{width:230px}.csv-col-link .csv-cell{-webkit-line-clamp:3}.csv-col-published{width:120px}.csv-col-content{width:230px}.csv-col-content .csv-cell{-webkit-line-clamp:6}.csv-col-tags{width:190px}.csv-col-tags .csv-cell{-webkit-line-clamp:4}.csv-col-metric{width:62px}.csv-col-source{width:130px}.csv-col-rank{width:72px}.csv-col-detail{width:82px}.csv-col-summary{width:200px}.csv-col-summary .csv-cell{-webkit-line-clamp:5}.csv-col-visible{width:180px}.csv-col-visible .csv-cell{-webkit-line-clamp:4}.csv-col-moments{width:200px}.csv-col-moments .csv-cell{-webkit-line-clamp:4}.csv-col-audio{width:190px}.csv-col-audio .csv-cell{-webkit-line-clamp:5}.csv-col-media-status{width:92px}
+    #csv-table-wrap{max-height:calc(100vh - 405px);min-height:180px;overscroll-behavior:contain;scrollbar-color:#adb4bf #eef1f4;scrollbar-width:auto}#csv-table-wrap::-webkit-scrollbar{width:14px;height:14px}#csv-table-wrap::-webkit-scrollbar-track{background:#eef1f4}#csv-table-wrap::-webkit-scrollbar-thumb{background:#adb4bf;border:3px solid #eef1f4;border-radius:999px}#csv-table-wrap::-webkit-scrollbar-thumb:hover{background:#8993a1}#csv-table-wrap .csv-table thead{position:sticky;top:0;z-index:2}.csv-col-content .csv-cell{display:block;max-height:170px;overflow-x:hidden;overflow-y:auto;padding-right:6px;white-space:pre-wrap;scrollbar-color:#b9c0c9 transparent;scrollbar-gutter:stable;scrollbar-width:thin;-webkit-line-clamp:unset}
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">热</div><div><div class="brand-title">社媒热度工作台</div><div class="brand-sub">小红书采集 · 本地配置中心</div></div></div>
+    <div class="top-actions"><span class="local-chip"><i class="dot"></i>仅本机访问</span><span class="state-chip" id="global-state">正在读取配置</span></div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="nav-label">工作区</div>
+      <button class="nav-button active" data-page="run"><span class="nav-icon">▶</span><span class="nav-text">开始运行</span><span class="nav-work-indicator" id="nav-work-run" hidden></span></button>
+      <button class="nav-button" data-page="workflows"><span class="nav-icon">↻</span><span class="nav-text">工作流</span><span class="nav-work-indicator" id="nav-work-workflows" hidden></span></button>
+      <button class="nav-button" data-page="results"><span class="nav-icon">▤</span>查看结果</button>
+      <button class="nav-button" data-page="targets"><span class="nav-icon">⌕</span>监控对象</button>
+      <button class="nav-button" data-page="settings"><span class="nav-icon">⚙</span>设置</button>
+      <div class="side-foot">设置保存到 input/*.json<br>启用媒体分析会发送媒体至所配端点</div>
+    </aside>
+    <main>
+      <section class="page" id="page-targets">
+        <div class="page-head"><div><div class="eyebrow">监控配置</div><h1 class="page-title">监控对象</h1><p class="page-desc">维护关键词和小红书监控账号；修改会自动保存，下次运行会读取这些文件。</p></div><span class="section-tag">JSON 文件为配置来源</span></div>
+        <div class="grid-two">
+          <article class="card">
+            <div class="card-head"><div><h2 class="card-title">关键词列表</h2><p class="card-desc">每个关键词会单独执行搜索。</p></div><span class="row-count" id="keyword-count">0 项</span></div>
+            <div class="input-row"><input class="text-input" id="keyword-input" placeholder="例如：咖啡店" maxlength="120"><button class="btn btn-secondary" id="add-keyword">添加关键词</button></div>
+            <div class="keyword-list" id="keyword-list"></div>
+            <div class="notice info">编辑和删除只影响本地关键词表，不会立即发起搜索。</div>
+          </article>
+          <article class="card">
+            <div class="card-head"><div><h2 class="card-title">监控账号</h2><p class="card-desc">填写小红书主页链接；昵称用于列表识别。</p></div><span class="row-count" id="user-count">0 个账号</span></div>
+            <div class="table-wrap"><table class="table"><thead><tr><th class="name-col">备注名称</th><th class="url-col">主页链接 / 用户 ID</th><th class="action-col"></th></tr></thead><tbody id="users-body"></tbody></table></div>
+            <div class="actions" style="margin-top:12px"><button class="btn btn-secondary" id="add-user">＋ 添加账号</button></div>
+            <div class="notice info">账号作品使用公开用户作品命令获取，再读取可访问的笔记详情。</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page active" id="page-run">
+        <div class="page-head"><div><div class="eyebrow">执行流程 · 单步运行</div><h1 class="page-title">开始运行</h1><p class="page-desc">可单独运行任一环节；启用指标筛选时，一键流程为“脚本提取 → 笔记筛选 → CSV 整理 → 大模型分析”。</p></div><button class="btn btn-primary" id="run-all">一键运行全部环节</button></div>
+        <article class="card" id="run-status-run">
+          <div class="card-head"><div><h2 class="card-title">当前运行状态</h2><p class="card-desc">在“开始运行”启动的任务会在这里显示进度、日志和结果文件。</p></div><span class="run-state" id="run-badge-run">就绪</span></div>
+          <div class="status-grid"><div class="metric"><div class="metric-label">开始时间</div><div class="metric-value" id="run-started-run">—</div></div><div class="metric"><div class="metric-label">任务状态</div><div class="metric-value" id="run-result-run">等待运行</div></div></div>
+          <div id="run-error-run" class="notice error" hidden></div>
+          <div id="run-output-link-run" class="notice info" hidden></div><div class="card-desc" style="margin:0 0 8px">运行摘要与日志</div><pre class="pre" id="run-log-run">尚无运行记录。</pre>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <div class="stage-card-content">
+              <div class="stage-title-row"><h2 class="card-title">脚本提取</h2><div class="actions"><span class="section-tag">小红书</span><button class="btn btn-secondary" id="scrape-selected">运行该环节</button></div></div>
+              <p class="card-desc">关键词采集和账号采集共用以下运行设置。</p>
+            </div>
+          </div>
+          <div class="settings-grid">
+            <div class="field"><label for="timeout">单条 OpenCLI 命令超时（秒）</label><input class="text-input" id="timeout" type="number" min="10" max="900"></div>
+          </div>
+          <label class="check-row"><input type="checkbox" id="creator-detail"><span><span class="check-title">尝试创作者中心深层指标</span><span class="check-note">关键词和账号采集共用。仅适用于当前创作者账号有权限的笔记；第三方搜索结果通常返回 EMPTY_RESULT，默认关闭。</span></span></label>
+          <label class="check-row"><input type="checkbox" id="seen-notes-enabled"><span><span class="check-title">跨采集跳过已爬取笔记</span><span class="check-note">开启后，未通过指标筛选的笔记也会记录到 input/seen_notes.txt。文件只保存紧凑去重键，不保存标题、正文或完整链接。</span></span></label>
+
+          <section class="run-subsection" aria-labelledby="keyword-settings-title">
+            <div class="run-subsection-head"><h3 class="run-subsection-title" id="keyword-settings-title">关键词采集设置</h3><p class="card-desc">每个关键词的采集条数同时限制搜索结果和详情读取数量。</p></div>
+            <div class="settings-grid">
+              <div class="field"><label for="search-limit">每个关键词采集条数</label><input class="text-input" id="search-limit" type="number" min="1" max="100"><small>对搜索到的每篇笔记尝试读取详情。</small></div>
+              <div class="field"><label for="sort">排序依据</label><select class="select-input" id="sort"><option value="comprehensive">综合</option><option value="latest">最新</option><option value="most-liked">最多点赞</option><option value="most-commented">最多评论</option><option value="most-collected">最多收藏</option></select></div>
+              <div class="field"><label for="note-type">笔记类型</label><select class="select-input" id="note-type"><option value="all">不限</option><option value="video">视频</option><option value="image">图文</option></select></div>
+              <div class="field"><label for="publish-time">发布时间</label><select class="select-input" id="publish-time"><option value="anytime">不限</option><option value="day">一天内</option><option value="week">一周内</option><option value="half-year">半年内</option></select></div>
+              <div class="field"><label for="scope">搜索范围</label><select class="select-input" id="scope"><option value="all">不限</option><option value="seen">已看过</option><option value="unseen">未看过</option><option value="following">已关注</option></select></div>
+              <div class="field"><label for="location">位置距离</label><select class="select-input" id="location"><option value="all">不限</option><option value="same-city">同城</option><option value="nearby">附近</option></select></div>
+            </div>
+          </section>
+
+          <section class="run-subsection" aria-labelledby="user-settings-title">
+            <div class="run-subsection-head"><h3 class="run-subsection-title" id="user-settings-title">监控账号采集设置</h3><p class="card-desc">账号作品数量和详情读取上限可分别控制。</p></div>
+            <div class="settings-grid">
+              <div class="field"><label for="user-limit">每个监控账号最多获取作品数</label><input class="text-input" id="user-limit" type="number" min="1" max="100"></div>
+              <div class="field"><label for="detail-user-limit">每个账号最多读取几篇详情</label><input class="text-input" id="detail-user-limit" type="number" min="1" max="100"></div>
+            </div>
+          </section>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <div class="stage-card-content">
+              <div class="stage-title-row"><h2 class="card-title">笔记筛选</h2><div class="actions"><span class="section-tag">JSON</span><button class="btn btn-secondary" id="filter-selected">运行该环节</button></div></div>
+              <p class="card-desc">按点赞、收藏或评论阈值筛选采集 JSON，生成新文件；原始采集结果不会修改。</p>
+            </div>
+          </div>
+          <div class="aggregate-actions"><select class="select-input" id="filter-stage-file" aria-label="选择要筛选的采集结果文件"><option value="">正在读取结果文件…</option></select></div>
+          <section class="csv-filter-panel" aria-labelledby="csv-filter-title">
+            <div class="csv-filter-head">
+              <div><h3 class="csv-filter-title" id="csv-filter-title">指标条件</h3><p class="card-desc">同一条件组内按“且”判断，条件组之间按“或”判断。缺失或无法解析的指标不会通过阈值条件。</p></div>
+              <label class="csv-filter-switch"><input type="checkbox" id="csv-filter-enabled"><span>启用筛选</span></label>
+            </div>
+            <div class="csv-filter-editor" id="csv-filter-editor" hidden>
+              <div id="csv-filter-groups"></div>
+              <div class="csv-filter-actions"><button class="btn btn-secondary btn-small" id="csv-filter-add-group" type="button">＋ 添加“或”条件组</button></div>
+              <div class="csv-filter-expression" id="csv-filter-summary">尚未添加条件</div>
+            </div>
+          </section>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <div class="stage-card-content">
+              <div class="stage-title-row"><h2 class="card-title">CSV 整理</h2><button class="btn btn-secondary" id="aggregate-selected">运行该环节</button></div>
+              <p class="card-desc">将选中的采集或筛选 JSON 整理成 CSV；不会重新访问网页。</p>
+            </div>
+          </div>
+          <div class="aggregate-actions"><select class="select-input" id="stage-file" aria-label="选择后续处理的采集结果文件"><option value="">正在读取结果文件…</option></select></div>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <div class="stage-card-content">
+              <div class="stage-title-row"><h2 class="card-title">大模型分析</h2><button class="btn btn-secondary" id="analyze-selected">运行该环节</button></div>
+              <p class="card-desc">选择一个 CSV，只分析其中“媒体解析状态”不为 success 的内容，并把结果直接回写到该 CSV。</p>
+            </div>
+          </div>
+          <div class="aggregate-actions"><select class="select-input" id="analyze-csv-file" aria-label="选择要分析的历史 CSV 文件"><option value="">正在读取 CSV 文件…</option></select></div>
+          <div class="card-desc">模型与媒体处理参数在“设置”中配置。</div>
+        </article>
+      </section>
+
+      <section class="page" id="page-workflows">
+        <div class="page-head"><div><div class="eyebrow">自动化执行</div><h1 class="page-title">工作流</h1><p class="page-desc">按设定顺序运行脚本提取、笔记筛选、CSV 整理和大模型分析。WebUI 服务需要保持运行。</p></div></div>
+        <article class="card" id="run-status-workflows" hidden>
+          <div class="card-head"><div><h2 class="card-title">当前运行状态</h2><p class="card-desc">在“工作流”启动的任务会在这里显示进度、日志和结果文件。</p></div><span class="run-state" id="run-badge-workflows">就绪</span></div>
+          <div class="status-grid"><div class="metric"><div class="metric-label">开始时间</div><div class="metric-value" id="run-started-workflows">—</div></div><div class="metric"><div class="metric-label">任务状态</div><div class="metric-value" id="run-result-workflows">等待运行</div></div></div>
+          <div id="run-error-workflows" class="notice error" hidden></div>
+          <div id="run-output-link-workflows" class="notice info" hidden></div><div class="card-desc" style="margin:0 0 8px">运行摘要与日志</div><pre class="pre" id="run-log-workflows">尚无运行记录。</pre>
+        </article>
+        <article class="card">
+          <div class="workflow-toolbar"><select class="select-input" id="workflow-select" aria-label="选择已保存的工作流"><option value="">新工作流</option></select><button class="btn btn-secondary" id="workflow-new">新建</button><button class="btn btn-secondary" id="workflow-delete">删除当前</button></div>
+          <div class="settings-grid">
+            <div class="field"><label for="workflow-name">工作流名称</label><input class="text-input" id="workflow-name" maxlength="100" placeholder="例如：每日小红书采集"></div>
+            <div class="field"><label for="workflow-frequency">执行频率</label><select class="select-input" id="workflow-frequency"><option value="daily">每天</option><option value="weekly">每周</option></select></div>
+            <div class="field"><label for="workflow-time">执行时间（本机时间）</label><input class="text-input" id="workflow-time" type="time" value="09:00"></div>
+            <div class="field workflow-days" id="workflow-weekday-wrap" hidden><label for="workflow-weekday">每周星期</label><select class="select-input" id="workflow-weekday"><option value="0">星期一</option><option value="1">星期二</option><option value="2">星期三</option><option value="3">星期四</option><option value="4">星期五</option><option value="5">星期六</option><option value="6">星期日</option></select></div>
+          </div>
+          <label class="check-row"><input type="checkbox" id="workflow-enabled"><span><span class="check-title">启用定时执行</span><span class="check-note">按本机时区检查计划；WebUI 关闭期间不会执行，重新启动后会补跑当天已到时间的计划。</span></span></label>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h2 class="card-title">按顺序执行任务</h2><p class="card-desc">任务按列表从上到下执行；步骤失败会停止后续任务。工作流修改会自动保存，并同时保存当前采集设置和监控对象。</p></div></div>
+          <div id="workflow-tasks"><div class="empty-hint">尚未添加任务。</div></div>
+          <div class="workflow-toolbar"><select class="select-input" id="workflow-new-task-type" aria-label="新任务类型"><option value="scrape">脚本提取</option><option value="filter">笔记筛选</option><option value="aggregate">CSV 整理</option><option value="analyze">大模型分析</option></select><button class="btn btn-secondary" id="workflow-add-task">添加任务</button></div>
+        </article>
+        <div class="sticky-actions"><span class="save-state" id="workflow-save-state">工作流修改后会自动保存</span><div class="actions"><button class="btn btn-primary" id="workflow-run">立即运行</button></div></div>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="page-head"><div><div class="eyebrow">本机运行与分析服务</div><h1 class="page-title">设置</h1><p class="page-desc">运行环境、媒体处理和模型凭据集中管理。</p></div><button class="btn btn-secondary" id="check-doctor">检查连接</button></div>
+        <article class="card">
+          <div class="card-head"><div><h2 class="card-title">运行环境</h2><p class="card-desc">选择 OpenCLI 可执行文件和浏览器 Profile；留空时使用当前 PATH 与默认 Profile。</p></div></div>
+          <div class="settings-grid">
+            <div class="field"><label for="opencli-bin">OpenCLI 启动文件（可选）</label><input class="text-input" id="opencli-bin" placeholder="例如：%LOCALAPPDATA%\pnpm\bin\opencli.CMD"><small>Windows 上优先将 pnpm/npm 的路径放在 WindowsApps 前；也可以在此指定启动文件。</small></div>
+            <div class="field"><label for="opencli-profile">浏览器 Profile（可选）</label><input class="text-input" id="opencli-profile" placeholder="留空使用 OpenCLI 默认配置"></div>
+          </div>
+          <div class="notice warn">LLM API 密钥不会在此页面输入或写入 JSON。原始媒体保存在本机 output/media；启用分析时，媒体内容和笔记上下文会通过 HTTPS 发至所配置的 LLM 服务。</div>
+          <div id="doctor-result" class="pre" hidden></div>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h2 class="card-title">项目依赖</h2><p class="card-desc">更新 requirements.txt 中的 Python 依赖和通过 npm 或 pnpm 安装的 OpenCLI；Node.js 仅检查版本。更新后请重启 WebUI。</p></div></div>
+          <div class="actions"><button class="btn btn-secondary" id="update-dependencies">检查并更新依赖</button><span class="save-state" id="dependency-state">尚未检查</span></div>
+          <div id="dependency-result" class="pre" hidden></div>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><div><h2 class="card-title">媒体与模型</h2><p class="card-desc">通过 OpenCLI 下载笔记图片与视频关键帧，再调用兼容视觉输入的 Chat Completions API 分析。</p></div><span class="section-tag">默认关闭，避免意外下载或产生 API 费用</span></div>
+          <div class="card-desc" style="margin:0 0 12px">LLM 接入仅用于第 3 步；网页采集不会自动下载媒体或产生模型费用。</div>
+          <label class="check-row"><input type="checkbox" id="llm-enabled"><span><span class="check-title">启用媒体下载与分析</span><span class="check-note">启用后可单独执行 LLM 分析。设置会自动保存；请另行配置密钥凭据。</span></span></label>
+          <div class="settings-grid">
+            <div class="field"><label for="llm-endpoint">API 端点根地址</label><input class="text-input" id="llm-endpoint" placeholder="https://api.example.com/v1"><small>不要在 URL 中附带 key、token、查询参数或账号密码。</small></div>
+            <div class="field"><label for="llm-model-select">可用视觉模型</label><div class="input-row"><select class="select-input" id="llm-model-select"><option value="">先填写端点并获取模型</option></select><button class="btn btn-secondary" id="llm-fetch-models">获取模型</button></div><input class="text-input" id="llm-model-custom" placeholder="端点不支持模型列表时手动填写" hidden><small>从兼容的 /models 接口读取模型 ID；只返回名称，不会把密钥交给浏览器。请选支持图像输入的多模态模型。</small><small id="llm-model-status" class="aggregate-meta">尚未获取模型列表。</small></div>
+            <div class="field"><label for="llm-credential-id">密钥凭据标识（不是密钥）</label><input class="text-input" id="llm-credential-id" maxlength="64" placeholder="social-trend-llm"><small>只保存这个标识；真正的密钥由终端写入 Windows Credential Manager。</small></div>
+            <div class="field"><label for="llm-auth-header">认证请求头</label><input class="text-input" id="llm-auth-header" placeholder="Authorization"></div>
+            <div class="field"><label for="llm-auth-scheme">认证方案前缀</label><input class="text-input" id="llm-auth-scheme" placeholder="Bearer"><small>若供应商直接使用自定义 key 请求头，可留空。</small></div>
+            <div class="field"><label for="llm-audio-model">音频转写模型（可选）</label><input class="text-input" id="llm-audio-model" placeholder="支持 /audio/transcriptions 的模型 ID"><small>留空则仍分析视频画面，但不单独转录口播。</small></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h2 class="card-title">媒体与成本上限</h2><p class="card-desc">限制每篇笔记的图片数、关键帧数和媒体尺寸。</p></div></div>
+          <div class="settings-grid">
+            <div class="field"><label for="llm-images-limit">每篇最多分析图片数</label><input class="text-input" id="llm-images-limit" type="number" min="1" max="12"></div>
+            <div class="field"><label for="llm-frames-limit">每篇视频最多关键帧数</label><input class="text-input" id="llm-frames-limit" type="number" min="1" max="12"></div>
+            <div class="field"><label for="llm-frame-interval">视频抽帧间隔（秒）</label><input class="text-input" id="llm-frame-interval" type="number" min="1" max="60"></div>
+            <div class="field"><label for="llm-image-edge">图片最长边（像素）</label><input class="text-input" id="llm-image-edge" type="number" min="384" max="2048"></div>
+            <div class="field"><label for="llm-video-seconds">单段视频处理上限（秒）</label><input class="text-input" id="llm-video-seconds" type="number" min="10" max="1800"></div>
+            <div class="field"><label for="llm-timeout">LLM 请求超时（秒）</label><input class="text-input" id="llm-timeout" type="number" min="10" max="600"></div>
+            <div class="field"><label for="llm-ffmpeg-bin">FFmpeg 路径（可选）</label><input class="text-input" id="llm-ffmpeg-bin" placeholder="留空则从 PATH 查找"></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h2 class="card-title">密钥保护与连接检查</h2><p class="card-desc">密钥会在浏览器内加密后再提交；服务端只在内存中解密，并写入 Windows Credential Manager。</p></div></div>
+          <div class="notice warn">密钥不会以明文进入 WebUI HTTP 请求、配置 JSON 或日志。浏览器使用一次性 RSA-OAEP/AES-GCM 加密载荷；服务端私钥仅驻留进程内存。也可使用终端隐藏输入命令设置。</div>
+          <div class="field"><label for="llm-api-key">API 密钥</label><div class="input-row"><input class="text-input" id="llm-api-key" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="在此粘贴供应商 API 密钥"><button class="btn btn-secondary" id="llm-toggle-key" type="button" aria-pressed="false">显示</button></div><small>“显示”只改变本机页面输入框的可见性；保存后输入框会清空。</small></div>
+          <div class="actions"><button class="btn btn-primary" id="llm-save-key">加密并保存密钥</button><button class="btn btn-secondary" id="llm-check-key">检查密钥状态</button><button class="btn btn-secondary" id="llm-test">测试 LLM 连接</button><span class="save-state" id="llm-key-state">尚未检查密钥</span></div>
+          <details style="margin-top:12px"><summary class="card-desc">或在终端使用隐藏输入</summary><pre class="pre" id="llm-key-command">py -3 scripts/manage_llm_key.py set social-trend-llm</pre></details>
+          <div id="llm-test-result" class="pre" hidden></div>
+        </article>
+      </section>
+
+      <section class="page" id="page-results">
+        <div class="page-head"><div><div class="eyebrow">运行归档</div><h1 class="page-title">查看结果</h1><p class="page-desc">浏览历史生成的 CSV 文件及其中保存的数据。</p></div></div>
+        <article class="card">
+          <div class="card-head"><div><h2 class="card-title">历史 CSV 文件</h2><p class="card-desc">选择 output 目录中已生成的 CSV，直接查看文件内容；列表包含旧版本文件。</p></div><button class="btn btn-quiet" id="refresh-result-list">刷新 CSV 列表</button></div>
+          <div class="aggregate-actions"><select class="select-input" id="csv-file" aria-label="选择历史 CSV 文件"><option value="">正在读取 CSV 文件…</option></select></div>
+          <div class="aggregate-meta" id="csv-message">选择一个历史 CSV 文件查看内容。</div><div class="aggregate-download" id="csv-download"></div>
+          <div class="table-wrap" id="csv-table-wrap" hidden><table class="table csv-table"><colgroup id="csv-table-columns"></colgroup><thead id="csv-table-head"></thead><tbody id="csv-table-body"></tbody></table></div>
+        </article>
+      </section>
+
+      <div class="sticky-actions" id="global-actions"><span class="save-state" id="save-state">设置修改后会自动保存</span><div class="actions"><button class="btn btn-secondary" id="reload-config">重新读取文件</button></div></div>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script>
+    const LOCAL_TOKEN = "__LOCAL_TOKEN__";
+    const state = { keywords: [], users: [], filters: {}, app_settings: {}, llm_settings: {}, llm_models: [], workflows: [], activeWorkflowId: null, workflowTasks: [] };
+    let pollTimer = null;
+    let toastTimer = null;
+    let resultFiles = [];
+    let csvFiles = [];
+    let lastRunStatus = "";
+    let currentPage = "run";
+
+    const $ = (id) => document.getElementById(id);
+    const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+    const runStatusLabels = { idle:"就绪", queued:"排队中", running:"运行中", succeeded:"已完成", partial:"部分完成", failed:"失败", analysis_failed:"分析失败", unknown:"未知" };
+    const runStatusText = (status, fallback = "等待运行") => runStatusLabels[status] || (status ? "未知状态" : fallback);
+    const noteFilterFields = {
+      likes: { label: "点赞", column: "点赞数" },
+      collects: { label: "收藏", column: "收藏数" },
+      comments: { label: "评论", column: "评论数" },
+    };
+    const noteFilterOperators = {
+      gt: { label: "大于", symbol: ">" },
+      gte: { label: "大于等于", symbol: "≥" },
+      eq: { label: "等于", symbol: "=" },
+      lte: { label: "小于等于", symbol: "≤" },
+      lt: { label: "小于", symbol: "<" },
+    };
+    const noteFilterMaxGroups = 10;
+    const noteFilterMaxConditions = 10;
+    const noteFilterDefaultValue = 1000;
+    const cloneJson = (value) => JSON.parse(JSON.stringify(value));
+    const createNoteFilterCondition = () => ({ field: "likes", operator: "gt", value: noteFilterDefaultValue });
+    const createNoteFilterGroup = () => ({ conditions: [createNoteFilterCondition()] });
+    const defaultNoteFilter = () => ({ enabled: false, groups: [] });
+
+    function normalizeClientNoteFilter(raw) {
+      const source = raw && typeof raw === "object" ? raw : defaultNoteFilter();
+      const groups = Array.isArray(source.groups) ? source.groups.slice(0, noteFilterMaxGroups).map((group) => {
+        const conditions = Array.isArray(group?.conditions) ? group.conditions.slice(0, noteFilterMaxConditions).map((condition) => {
+          const field = Object.hasOwn(noteFilterFields, condition?.field) ? condition.field : "likes";
+          const operator = Object.hasOwn(noteFilterOperators, condition?.operator) ? condition.operator : "gt";
+          const value = Number.isInteger(condition?.value) && condition.value >= 0 ? condition.value : noteFilterDefaultValue;
+          return { field, operator, value };
+        }) : [];
+        return { conditions: conditions.length ? conditions : [createNoteFilterCondition()] };
+      }) : [];
+      const normalized = { enabled: source.enabled === true, groups };
+      if (normalized.enabled && !normalized.groups.length) normalized.groups.push(createNoteFilterGroup());
+      return normalized;
+    }
+
+    function ensureNoteFilter() {
+      state.filters = state.filters && typeof state.filters === "object" ? state.filters : {};
+      state.filters.csv = state.filters.csv && typeof state.filters.csv === "object" ? state.filters.csv : {};
+      state.filters.csv.note_filter = normalizeClientNoteFilter(state.filters.csv.note_filter);
+      return state.filters.csv.note_filter;
+    }
+
+    function noteFilterExpression(noteFilter) {
+      if (!noteFilter?.enabled) return "未启用筛选，CSV 将包含全部去重后的笔记。";
+      const groups = (noteFilter.groups || []).map((group) => (group.conditions || []).map((condition) => {
+        const field = noteFilterFields[condition.field]?.label || "指标";
+        const operator = noteFilterOperators[condition.operator]?.symbol || ">";
+        return `${field} ${operator} ${condition.value}`;
+      }).join(" 且 ")).filter(Boolean);
+      return groups.length ? `筛选结果：${groups.join("　或　")}` : "尚未添加条件";
+    }
+
+    function noteFilterOptionHtml(selected, entries) {
+      return Object.entries(entries).map(([value, config]) => `<option value="${value}" ${value === selected ? "selected" : ""}>${config.label}</option>`).join("");
+    }
+
+    function renderNoteFilter() {
+      const noteFilter = ensureNoteFilter();
+      $("csv-filter-enabled").checked = noteFilter.enabled;
+      $("csv-filter-editor").hidden = !noteFilter.enabled;
+      $("csv-filter-summary").textContent = noteFilterExpression(noteFilter);
+      if (!noteFilter.enabled) { $("csv-filter-groups").innerHTML = ""; return; }
+      $("csv-filter-groups").innerHTML = noteFilter.groups.map((group, groupIndex) => {
+        const conditions = group.conditions.map((condition, conditionIndex) => `
+          ${conditionIndex ? '<span class="csv-filter-and">且</span>' : ""}
+          <div class="csv-filter-condition">
+            <select class="select-input" data-filter-field="${groupIndex}:${conditionIndex}" aria-label="筛选指标">${noteFilterOptionHtml(condition.field, noteFilterFields)}</select>
+            <select class="select-input" data-filter-operator="${groupIndex}:${conditionIndex}" aria-label="比较方式">${noteFilterOptionHtml(condition.operator, noteFilterOperators)}</select>
+            <input class="text-input filter-value" type="number" min="0" max="2147483647" step="1" value="${esc(condition.value)}" data-filter-value="${groupIndex}:${conditionIndex}" aria-label="指标阈值">
+            <button class="btn btn-danger btn-small filter-remove" type="button" data-filter-remove-condition="${groupIndex}:${conditionIndex}" title="删除条件" ${group.conditions.length === 1 ? "disabled" : ""}>×</button>
+          </div>`).join("");
+        return `${groupIndex ? '<div class="csv-filter-or">或</div>' : ""}<div class="csv-filter-group"><div class="csv-filter-group-head"><div><span class="csv-filter-group-title">条件组 ${groupIndex + 1}</span><span class="csv-filter-group-note">组内条件同时满足</span></div><div class="actions"><button class="btn btn-quiet btn-small" type="button" data-filter-add-condition="${groupIndex}">＋ 添加“且”条件</button><button class="btn btn-danger btn-small" type="button" data-filter-remove-group="${groupIndex}" ${noteFilter.groups.length === 1 ? "disabled" : ""}>删除组</button></div></div>${conditions}</div>`;
+      }).join("");
+      $("csv-filter-add-group").disabled = noteFilter.groups.length >= noteFilterMaxGroups;
+    }
+
+    function renderWorkflowFilterEditor(task, taskIndex) {
+      task.note_filter = normalizeClientNoteFilter(task.note_filter);
+      task.note_filter.enabled = true;
+      const groups = task.note_filter.groups.map((group, groupIndex) => {
+        const conditions = group.conditions.map((condition, conditionIndex) => `
+          ${conditionIndex ? '<span class="csv-filter-and">且</span>' : ""}
+          <div class="csv-filter-condition">
+            <select class="select-input" data-wf-filter-field="${taskIndex}:${groupIndex}:${conditionIndex}" aria-label="筛选指标">${noteFilterOptionHtml(condition.field, noteFilterFields)}</select>
+            <select class="select-input" data-wf-filter-operator="${taskIndex}:${groupIndex}:${conditionIndex}" aria-label="比较方式">${noteFilterOptionHtml(condition.operator, noteFilterOperators)}</select>
+            <input class="text-input filter-value" type="number" min="0" max="2147483647" step="1" value="${esc(condition.value)}" data-wf-filter-value="${taskIndex}:${groupIndex}:${conditionIndex}" aria-label="指标阈值">
+            <button class="btn btn-danger btn-small filter-remove" type="button" data-wf-filter-remove-condition="${taskIndex}:${groupIndex}:${conditionIndex}" title="删除条件" ${group.conditions.length === 1 ? "disabled" : ""}>×</button>
+          </div>`).join("");
+        return `${groupIndex ? '<div class="csv-filter-or">或</div>' : ""}<div class="csv-filter-group"><div class="csv-filter-group-head"><div><span class="csv-filter-group-title">条件组 ${groupIndex + 1}</span><span class="csv-filter-group-note">组内条件同时满足</span></div><div class="actions"><button class="btn btn-quiet btn-small" type="button" data-wf-filter-add-condition="${taskIndex}:${groupIndex}">＋ 添加“且”条件</button><button class="btn btn-danger btn-small" type="button" data-wf-filter-remove-group="${taskIndex}:${groupIndex}" ${task.note_filter.groups.length === 1 ? "disabled" : ""}>删除组</button></div></div>${conditions}</div>`;
+      }).join("");
+      return `<div class="csv-filter-panel"><div class="csv-filter-head"><div><h3 class="csv-filter-title">筛选条件</h3><p class="card-desc">组内条件同时满足，条件组之间任一满足即可。</p></div><button class="btn btn-secondary btn-small" type="button" data-wf-filter-add-group="${taskIndex}" ${task.note_filter.groups.length >= noteFilterMaxGroups ? "disabled" : ""}>＋ 添加“或”条件组</button></div><div class="csv-filter-editor">${groups}<div class="csv-filter-expression" data-wf-filter-summary="${taskIndex}">${esc(noteFilterExpression(task.note_filter))}</div></div></div>`;
+    }
+
+    function updateNoteFilterExpressionOnly() {
+      $("csv-filter-summary").textContent = noteFilterExpression(ensureNoteFilter());
+    }
+
+    const formatSystemTime = (value) => {
+      if (!value) return "—";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "—";
+      const pad = (number) => String(number).padStart(2, "0");
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    };
+    const api = async (path, options = {}) => {
+      const headers = { ...(options.headers || {}) };
+      if (options.method && options.method !== "GET") headers["X-Local-Token"] = LOCAL_TOKEN;
+      if (options.body) headers["Content-Type"] = "application/json";
+      const response = await fetch(path, { ...options, headers, cache: "no-store" });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const error = new Error(data.error || `请求失败 (${response.status})`);
+        error.status = response.status;
+        throw error;
+      }
+      return data;
+    };
+    const toast = (message, type = "") => {
+      const element = $("toast"); element.textContent = message; element.className = `toast show ${type}`;
+      clearTimeout(toastTimer); toastTimer = setTimeout(() => element.className = "toast", 2600);
+    };
+    const setSaveState = (text, type = "") => { $("save-state").textContent = text; $("save-state").className = `save-state ${type}`; };
+    function createDebouncedSaver(task, delay = 650) {
+      let timer = null;
+      let active = null;
+      let queued = false;
+      const start = () => {
+        if (active) { queued = true; return active; }
+        active = (async () => {
+          try {
+            do {
+              queued = false;
+              await task();
+            } while (queued);
+          } finally {
+            active = null;
+          }
+        })();
+        return active;
+      };
+      return {
+        schedule() {
+          if (active) { queued = true; return; }
+          if (timer) clearTimeout(timer);
+          timer = setTimeout(() => {
+            timer = null;
+            start().catch(() => {});
+          }, delay);
+        },
+        flush() {
+          const pending = Boolean(timer || active);
+          if (timer) clearTimeout(timer);
+          timer = null;
+          return pending ? start() : Promise.resolve();
+        },
+        cancel() {
+          if (timer) clearTimeout(timer);
+          timer = null;
+          queued = false;
+        },
+      };
+    }
+
+    function setNavWorkIndicator(surface, mode, status = "") {
+      const indicator = $(`nav-work-${surface}`);
+      if (!indicator) return;
+      const titles = { queued:"任务已排队", running:"任务正在运行", succeeded:"任务已完成", partial:"任务部分完成", failed:"任务失败" };
+      const title = mode === "working" ? titles[status] || "任务正在运行" : titles[status] || "任务状态已更新";
+      indicator.hidden = false;
+      indicator.dataset.state = mode;
+      indicator.className = `nav-work-indicator ${mode === "complete" ? status : "working"}`;
+      indicator.title = title;
+      indicator.setAttribute("aria-label", title);
+    }
+
+    function clearNavWorkIndicator(surface) {
+      const indicator = $(`nav-work-${surface}`);
+      if (!indicator) return;
+      indicator.hidden = true;
+      indicator.dataset.state = "";
+      indicator.className = "nav-work-indicator";
+      indicator.removeAttribute("title");
+      indicator.removeAttribute("aria-label");
+    }
+
+    function clearNavWorkCompletion(surface) {
+      const indicator = $(`nav-work-${surface}`);
+      if (indicator?.dataset.state === "complete") clearNavWorkIndicator(surface);
+    }
+
+    function updateNavWorkIndicator(surface, status, wasActive) {
+      if (status === "queued" || status === "running") {
+        setNavWorkIndicator(surface, "working", status);
+      } else if (wasActive) {
+        if (currentPage === surface) clearNavWorkIndicator(surface);
+        else setNavWorkIndicator(surface, "complete", status);
+      } else {
+        const indicator = $(`nav-work-${surface}`);
+        if (indicator?.dataset.state === "working") clearNavWorkIndicator(surface);
+      }
+    }
+
+    function renderKeywords() {
+      $("keyword-count").textContent = `${state.keywords.length} 项`;
+      if (!state.keywords.length) { $("keyword-list").innerHTML = '<span class="empty-hint">暂未添加关键词</span>'; return; }
+      $("keyword-list").innerHTML = state.keywords.map((word, index) => `<span class="keyword-chip">${esc(word)}<button class="chip-remove" title="删除" data-remove-keyword="${index}">×</button></span>`).join("");
+    }
+
+    function renderUsers() {
+      $("user-count").textContent = `${state.users.length} 个账号`;
+      if (!state.users.length) { $("users-body").innerHTML = '<tr><td colspan="3" class="empty-hint">暂无监控账号</td></tr>'; return; }
+      $("users-body").innerHTML = state.users.map((user, index) => `<tr data-user-row="${index}"><td><input class="text-input user-name" aria-label="账号备注" value="${esc(user.name)}" placeholder="账号备注"></td><td><input class="text-input user-url" aria-label="主页链接" value="${esc(user.profile_url)}" placeholder="https://www.xiaohongshu.com/user/profile/..."></td><td class="action-col"><button class="btn btn-danger btn-small" data-remove-user="${index}">移除</button></td></tr>`).join("");
+    }
+
+    function readFormIntoState() {
+      const noteFilter = cloneJson(ensureNoteFilter());
+      state.users = [...document.querySelectorAll("#users-body tr[data-user-row]")].map((row) => ({
+        name: row.querySelector(".user-name").value.trim(),
+        profile_url: row.querySelector(".user-url").value.trim(),
+      }));
+      state.filters = {
+        search: {
+          limit: Number($("search-limit").value), sort: $("sort").value,
+          note_type: $("note-type").value, publish_time: $("publish-time").value,
+          scope: $("scope").value, location: $("location").value,
+        },
+        users: { limit: Number($("user-limit").value) },
+        details: {
+          limit_per_user: Number($("detail-user-limit").value),
+          include_creator_note_detail: $("creator-detail").checked,
+        },
+        csv: { note_filter: noteFilter },
+        deduplication: {
+          enabled: $("seen-notes-enabled").checked,
+          seen_file: state.filters?.deduplication?.seen_file || "seen_notes.txt",
+        },
+        timeout_seconds: Number($("timeout").value),
+      };
+      state.app_settings = { opencli_bin: $("opencli-bin").value.trim(), opencli_profile: $("opencli-profile").value.trim() };
+      state.llm_settings = {
+        enabled: $("llm-enabled").checked,
+        endpoint_url: $("llm-endpoint").value.trim(), model: selectedLlmModel(),
+        credential_id: $("llm-credential-id").value.trim(), auth_header: $("llm-auth-header").value.trim(),
+        auth_scheme: $("llm-auth-scheme").value.trim(), audio_model: $("llm-audio-model").value.trim(),
+        max_images_per_note: Number($("llm-images-limit").value),
+        max_video_frames: Number($("llm-frames-limit").value), frame_interval_seconds: Number($("llm-frame-interval").value),
+        max_image_edge: Number($("llm-image-edge").value), max_video_seconds: Number($("llm-video-seconds").value),
+        request_timeout_seconds: Number($("llm-timeout").value), ffmpeg_bin: $("llm-ffmpeg-bin").value.trim(),
+      };
+    }
+
+    function fillForm() {
+      const search = state.filters.search || {};
+      const users = state.filters.users || {};
+      const details = state.filters.details || {};
+      $("search-limit").value = search.limit ?? 10; $("sort").value = search.sort ?? "most-liked";
+      $("note-type").value = search.note_type ?? "all"; $("publish-time").value = search.publish_time ?? "anytime";
+      $("scope").value = search.scope ?? "all"; $("location").value = search.location ?? "all";
+      $("user-limit").value = users.limit ?? 10;
+      $("detail-user-limit").value = details.limit_per_user ?? 10; $("creator-detail").checked = !!details.include_creator_note_detail;
+      $("seen-notes-enabled").checked = !!state.filters.deduplication?.enabled;
+      $("timeout").value = state.filters.timeout_seconds ?? 180;
+      $("opencli-bin").value = state.app_settings.opencli_bin ?? ""; $("opencli-profile").value = state.app_settings.opencli_profile ?? "";
+      const llm = state.llm_settings || {};
+      $("llm-enabled").checked = !!llm.enabled; $("llm-endpoint").value = llm.endpoint_url ?? "";
+      renderLlmModelOptions(state.llm_models || [], llm.model ?? "");
+      $("llm-credential-id").value = llm.credential_id ?? "social-trend-llm"; $("llm-auth-header").value = llm.auth_header ?? "Authorization";
+      $("llm-auth-scheme").value = llm.auth_scheme ?? "Bearer"; $("llm-audio-model").value = llm.audio_model ?? "";
+      $("llm-images-limit").value = llm.max_images_per_note ?? 6;
+      $("llm-frames-limit").value = llm.max_video_frames ?? 6; $("llm-frame-interval").value = llm.frame_interval_seconds ?? 3;
+      $("llm-image-edge").value = llm.max_image_edge ?? 1024; $("llm-video-seconds").value = llm.max_video_seconds ?? 300;
+      $("llm-timeout").value = llm.request_timeout_seconds ?? 120; $("llm-ffmpeg-bin").value = llm.ffmpeg_bin ?? "";
+      updateKeyCommand();
+      renderKeywords(); renderUsers(); renderNoteFilter();
+    }
+
+    async function loadConfig() {
+      const data = await api("/api/state");
+      state.keywords = data.keywords || []; state.users = data.users || [];
+      state.filters = data.filters || {}; state.app_settings = data.app_settings || {}; state.llm_settings = data.llm_settings || {};
+      fillForm(); setSaveState("配置已从 input 文件载入", "ok");
+      $("global-state").innerHTML = '<i class="dot"></i>本机配置已载入';
+    }
+
+    async function saveConfig(silent = false, refreshForm = true) {
+      readFormIntoState();
+      const configPayload = { keywords: state.keywords, users: state.users, filters: state.filters, app_settings: state.app_settings, llm_settings: state.llm_settings };
+      const data = await api("/api/config", { method: "POST", body: JSON.stringify(configPayload) });
+      state.keywords = data.config.keywords; state.users = data.config.users;
+      state.filters = data.config.filters; state.app_settings = data.config.app_settings; state.llm_settings = data.config.llm_settings;
+      if (refreshForm) fillForm();
+      setSaveState("已保存到 input JSON 文件", "ok");
+      if (!silent) toast("设置已保存");
+      return data;
+    }
+
+    function setPage(name) {
+      currentPage = name;
+      clearNavWorkCompletion(name);
+      if (name !== "settings") clearLlmKeyInput();
+      $("global-actions").hidden = name === "workflows" || name === "results";
+      document.querySelectorAll(".nav-button").forEach((button) => button.classList.toggle("active", button.dataset.page === name));
+      document.querySelectorAll(".page").forEach((section) => section.classList.toggle("active", section.id === `page-${name}`));
+      if (name === "run" || name === "workflows") refreshRun();
+      if (name === "workflows" && !state.workflowsLoaded) loadWorkflows().catch((error) => toast(error.message, "error"));
+      else if (name === "workflows") renderWorkflowTasks();
+      if (name === "results") {
+        refreshCsvFiles($("csv-file").value).catch((error) => toast(error.message, "error"));
+      }
+    }
+
+    function selectedLlmModel() {
+      const choice = $("llm-model-select").value;
+      return choice.startsWith("model:") ? choice.slice(6) : $("llm-model-custom").value.trim();
+    }
+
+    function renderLlmModelOptions(models, selectedModel = "") {
+      const select = $("llm-model-select");
+      const unique = [...new Set((models || []).filter((model) => typeof model === "string" && model.trim()).map((model) => model.trim()))];
+      const options = ['<option value="">选择已获取模型…</option>', ...unique.map((model) => `<option value="model:${esc(model)}">${esc(model)}</option>`), '<option value="__manual__">手动输入模型名称…</option>'];
+      select.innerHTML = options.join("");
+      const matched = unique.includes(selectedModel);
+      select.value = matched ? `model:${selectedModel}` : (selectedModel ? "__manual__" : "");
+      $("llm-model-custom").value = matched ? "" : selectedModel;
+      $("llm-model-custom").hidden = select.value !== "__manual__";
+    }
+
+    async function fetchLlmModels() {
+      readFormIntoState();
+      const button = $("llm-fetch-models"); const status = $("llm-model-status");
+      button.disabled = true; button.textContent = "正在获取…"; status.textContent = "正在检查凭据并请求模型列表…";
+      try {
+        const credentialId = state.llm_settings.credential_id;
+        if (credentialId) {
+          const keyStatus = await api(`/api/llm/key-status?credential_id=${encodeURIComponent(credentialId)}`);
+          if (!keyStatus.configured) throw new Error(`尚未配置凭据“${credentialId}”；请先在终端运行密钥管理命令。`);
+        }
+        const result = await api("/api/llm/models", { method: "POST", body: JSON.stringify(state.llm_settings) });
+        state.llm_models = result.models || [];
+        renderLlmModelOptions(state.llm_models, state.llm_settings.model);
+        status.textContent = `已获取 ${state.llm_models.length} 个模型。选择视觉模型后会自动保存。`;
+        setSaveState(`已获取 ${state.llm_models.length} 个模型；选择后会保存`);
+        toast(`已获取 ${state.llm_models.length} 个模型`);
+      } catch (error) {
+        renderLlmModelOptions([], state.llm_settings.model);
+        status.textContent = `${error.message}；若端点不支持 /models，可手动填写模型名称。`;
+        toast(error.message, "error");
+      } finally { button.disabled = false; button.textContent = "获取模型"; }
+    }
+
+    function updateKeyCommand() {
+      const rawId = $("llm-credential-id").value.trim() || "social-trend-llm";
+      const credentialId = /^[A-Za-z0-9_.-]{1,64}$/.test(rawId) ? rawId : "<仅限字母、数字、点、下划线、连字符>";
+      $("llm-key-command").textContent = `py -3 scripts/manage_llm_key.py set ${credentialId}`;
+    }
+
+    function bytesToBase64Url(value) {
+      const bytes = value instanceof Uint8Array ? value : new Uint8Array(value);
+      let binary = "";
+      for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+        binary += String.fromCharCode(...bytes.subarray(offset, Math.min(offset + 0x8000, bytes.length)));
+      }
+      return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+    }
+
+    function clearLlmKeyInput() {
+      const input = $("llm-api-key");
+      if (!input) return;
+      input.value = ""; input.type = "password";
+      const toggle = $("llm-toggle-key");
+      if (toggle) { toggle.textContent = "显示"; toggle.setAttribute("aria-pressed", "false"); }
+    }
+
+    async function saveLlmKey() {
+      const input = $("llm-api-key");
+      const status = $("llm-key-state");
+      const button = $("llm-save-key");
+      const credentialId = $("llm-credential-id").value.trim();
+      const secret = input.value.trim();
+      if (!/^[A-Za-z0-9_.-]{1,64}$/.test(credentialId)) { clearLlmKeyInput(); toast("请先填写有效的密钥凭据标识", "error"); return; }
+      if (!secret) { toast("请先输入 API 密钥", "error"); return; }
+      if (!window.isSecureContext || !window.crypto?.subtle) { clearLlmKeyInput(); toast("当前浏览器不支持安全加密，已拒绝发送密钥", "error"); return; }
+      const plainBytes = new TextEncoder().encode(secret);
+      if (plainBytes.length > 5120) { plainBytes.fill(0); clearLlmKeyInput(); toast("密钥超过安全存储长度限制", "error"); return; }
+      button.disabled = true; status.textContent = "正在本机加密并保存…";
+      let rawAesBytes = null;
+      try {
+        const keyInfo = await api("/api/llm/credential-public-key");
+        const rsaKey = await crypto.subtle.importKey("jwk", keyInfo.public_key, { name: "RSA-OAEP", hash: "SHA-256" }, false, ["encrypt"]);
+        const aesKey = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt"]);
+        rawAesBytes = new Uint8Array(await crypto.subtle.exportKey("raw", aesKey));
+        const nonce = crypto.getRandomValues(new Uint8Array(12));
+        const aad = new TextEncoder().encode(credentialId);
+        const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv: nonce, additionalData: aad }, aesKey, plainBytes);
+        const wrappedKey = await crypto.subtle.encrypt({ name: "RSA-OAEP" }, rsaKey, rawAesBytes);
+        const result = await api("/api/llm/credential-store", {
+          method: "POST",
+          body: JSON.stringify({ credential_id: credentialId, key_id: keyInfo.key_id, wrapped_key: bytesToBase64Url(wrappedKey), nonce: bytesToBase64Url(nonce), ciphertext: bytesToBase64Url(encrypted) }),
+        });
+        status.textContent = `密钥已加密保存（凭据：${result.credential_id}）`;
+        toast("密钥已安全保存");
+      } catch (error) {
+        status.textContent = `密钥保存失败：${error.message}`;
+        toast(error.message, "error");
+      } finally {
+        plainBytes.fill(0); if (rawAesBytes) rawAesBytes.fill(0);
+        clearLlmKeyInput();
+        button.disabled = false;
+        await checkLlmKey();
+      }
+    }
+
+    function toggleLlmKeyVisibility() {
+      const input = $("llm-api-key"); const button = $("llm-toggle-key");
+      const reveal = input.type === "password";
+      input.type = reveal ? "text" : "password";
+      button.textContent = reveal ? "隐藏" : "显示";
+      button.setAttribute("aria-pressed", String(reveal));
+    }
+
+    async function checkLlmKey() {
+      const credentialId = $("llm-credential-id").value.trim();
+      const label = $("llm-key-state");
+      if (!credentialId) { label.textContent = "未填写凭据标识"; return; }
+      label.textContent = "正在检查安全凭据库…";
+      try {
+        const result = await api(`/api/llm/key-status?credential_id=${encodeURIComponent(credentialId)}`);
+        label.textContent = result.configured ? "密钥已存于 Windows Credential Manager" : "尚未找到该密钥";
+      } catch (error) { label.textContent = error.message; }
+    }
+
+    async function testLlmConnection() {
+      readFormIntoState();
+      const box = $("llm-test-result"); box.hidden = false; box.textContent = "正在检查模型端点……";
+      try {
+        const result = await api("/api/llm/test", { method: "POST", body: JSON.stringify(state.llm_settings) });
+        box.textContent = `连接成功
+模型：${result.model}
+未向页面返回密钥或认证头。`;
+      } catch (error) { box.textContent = `连接失败：${error.message}`; }
+    }
+
+    function outputBasename(value) {
+      return String(value || "").split(/[\\/]/).pop();
+    }
+
+    function safeNoteHref(value) {
+      try {
+        const url = new URL(String(value || ""));
+        return url.protocol === "https:" && ["www.xiaohongshu.com", "xiaohongshu.com"].includes(url.hostname.toLowerCase()) ? url.href : "";
+      } catch { return ""; }
+    }
+
+    function isMissingRoute(error) {
+      return error.status === 404 && ["路径不存在。", "请求失败 (404)"].includes(error.message);
+    }
+
+    function parseCsvText(text, fileName) {
+      const source = String(text || "").replace(/^\uFEFF/, "");
+      const records = [];
+      let row = [];
+      let field = "";
+      let quoted = false;
+      for (let index = 0; index < source.length; index += 1) {
+        const char = source[index];
+        if (quoted) {
+          if (char === '"' && source[index + 1] === '"') { field += '"'; index += 1; }
+          else if (char === '"') quoted = false;
+          else field += char;
+        } else if (char === '"' && field === "") quoted = true;
+        else if (char === ",") { row.push(field); field = ""; }
+        else if (char === "\n" || char === "\r") {
+          if (char === "\r" && source[index + 1] === "\n") index += 1;
+          row.push(field); records.push(row); row = []; field = "";
+        } else field += char;
+      }
+      if (field !== "" || row.length) { row.push(field); records.push(row); }
+      const columns = records.shift() || [];
+      const dataRows = records.filter((cells) => !(cells.length === 1 && cells[0] === ""));
+      const rows = dataRows.slice(0, 300).map((cells) => Object.fromEntries(columns.map((column, index) => [column, cells[index] || ""])));
+      return { csv_file: fileName, columns, row_count: dataRows.length, preview_limit: 300, rows };
+    }
+
+    const csvColumnClasses = {
+      "主题": "csv-col-topic", "笔记标题": "csv-col-title", "作者": "csv-col-author",
+      "笔记链接": "csv-col-link", "发布时间": "csv-col-published", "正文": "csv-col-content",
+      "标签": "csv-col-tags", "点赞数": "csv-col-metric", "收藏数": "csv-col-metric",
+      "评论数": "csv-col-metric", "分享数": "csv-col-metric", "浏览量": "csv-col-metric",
+      "曝光量": "csv-col-metric", "观看量": "csv-col-metric", "来源账号": "csv-col-source",
+      "采集排名": "csv-col-rank", "详情状态": "csv-col-detail", "媒体摘要": "csv-col-summary",
+      "画面文字": "csv-col-visible", "视频关键点": "csv-col-moments", "音频转写": "csv-col-audio",
+      "媒体解析状态": "csv-col-media-status",
+    };
+    const csvSingleLineColumns = new Set(["发布时间", "点赞数", "收藏数", "评论数", "分享数", "浏览量", "曝光量", "观看量", "采集排名", "详情状态", "媒体解析状态"]);
+    const csvColumnClass = (column) => csvColumnClasses[column] || "";
+
+    function plainMediaSummary(value) {
+      let text = String(value ?? "").trim();
+      if (!text) return "";
+      for (let depth = 0; depth < 3; depth += 1) {
+        text = text.replace(/^```(?:json|markdown|text)?\s*/i, "").replace(/\s*```[\s\S]*$/i, "").trim();
+        try {
+          const parsed = JSON.parse(text);
+          if (typeof parsed === "string") { text = parsed.trim(); continue; }
+          if (parsed && typeof parsed === "object") {
+            const summary = parsed.summary ?? parsed.overall_summary ?? parsed.description ?? parsed.text;
+            if (typeof summary === "string") { text = summary.trim(); continue; }
+          }
+        } catch {}
+        break;
+      }
+      const match = text.match(/["']summary["']\s*:\s*"((?:\\.|[^"\\])*)"/s);
+      if (match) {
+        try { return JSON.parse(`"${match[1]}"`).trim(); } catch {}
+      }
+      const partial = text.match(/["']summary["']\s*:\s*["']([\s\S]*)$/);
+      if (partial) {
+        return partial[1]
+          .split(/["']\s*,\s*["'](?:visible_text|observed_elements|key_moments|uncertainties)["']/s)[0]
+          .replace(/\\r/g, "\r").replace(/\\n/g, "\n").replace(/\\t/g, "\t")
+          .replace(/\\"/g, '"').replace(/\\\\/g, "\\")
+          .replace(/["'}\],\s]+$/, "")
+          .trim();
+      }
+      return text;
+    }
+
+    function displayCsvPreview(data) {
+      const columns = data.columns || [];
+      const rows = data.rows || [];
+      const csvName = outputBasename(data.csv_file);
+      $("csv-message").textContent = `${csvName} · 共 ${data.row_count ?? rows.length} 行${(data.row_count ?? rows.length) > rows.length ? `，当前显示前 ${rows.length} 行` : ""}`;
+      $("csv-download").innerHTML = csvName ? `<a class="link" href="/output/${encodeURIComponent(csvName)}">下载完整 CSV →</a>` : "";
+      $("csv-table-columns").innerHTML = columns.map((column) => `<col class="${csvColumnClass(column)}">`).join("");
+      $("csv-table-head").innerHTML = `<tr>${columns.map((column) => `<th class="${csvColumnClass(column)}">${esc(column)}</th>`).join("")}</tr>`;
+      if (!rows.length) {
+        $("csv-table-body").innerHTML = `<tr><td colspan="${Math.max(columns.length, 1)}" class="empty-hint">这个 CSV 文件没有数据行。</td></tr>`;
+      } else {
+        $("csv-table-body").innerHTML = rows.map((row) => `<tr>${columns.map((column) => {
+          const value = column === "媒体摘要" ? plainMediaSummary(row[column]) : String(row[column] ?? "");
+          const href = /链接/.test(column) ? safeNoteHref(value) : "";
+          const cellClass = `csv-cell${csvSingleLineColumns.has(column) ? " csv-cell-single" : ""}`;
+          const content = href ? `<a class="link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(value)}</a>` : esc(value);
+          return `<td class="${csvColumnClass(column)}"><div class="${cellClass}" title="${esc(value)}">${content}</div></td>`;
+        }).join("")}</tr>`).join("");
+      }
+      $("csv-table-wrap").hidden = false;
+    }
+
+    async function loadCsvPreview(fileName) {
+      if (!fileName) {
+        $("csv-message").textContent = "当前没有可查看的 CSV 文件。";
+        $("csv-download").textContent = ""; $("csv-table-columns").textContent = ""; $("csv-table-head").textContent = "";
+        $("csv-table-body").textContent = ""; $("csv-table-wrap").hidden = true;
+        return;
+      }
+      try {
+        displayCsvPreview(await api(`/api/csv-preview?file=${encodeURIComponent(fileName)}`));
+      } catch (error) {
+        if (isMissingRoute(error)) {
+          try {
+            const response = await fetch(`/output/${encodeURIComponent(fileName)}`, { cache: "no-store" });
+            if (!response.ok) throw new Error(`读取 CSV 失败 (${response.status})`);
+            displayCsvPreview(parseCsvText(await response.text(), fileName));
+            return;
+          } catch (fallbackError) {
+            $("csv-message").textContent = fallbackError.message || "读取 CSV 文件失败。";
+          }
+        } else $("csv-message").textContent = error.message || "读取 CSV 文件失败。";
+        $("csv-download").textContent = ""; $("csv-table-wrap").hidden = true;
+      }
+    }
+
+    async function refreshCsvFiles(preferredFile = "", loadSelected = true) {
+      let data;
+      try {
+        data = await api("/api/csv-files");
+      } catch (error) {
+        if (!isMissingRoute(error)) throw error;
+        const legacy = await api("/api/results");
+        data = { files: (legacy.files || []).flatMap((item) => {
+          const file = item.csv_file || (item.csv_status === "需重整" ? String(item.file || "").replace(/^xhs_run_/, "xhs_summary_").replace(/\.json$/, ".csv") : "");
+          return file ? [{ file, stale: item.csv_status === "需重整", csv_status: item.csv_status || "未关联" }] : [];
+        }) };
+      }
+      csvFiles = data.files || [];
+      const select = $("csv-file");
+      const analyzeSelect = $("analyze-csv-file");
+      const currentAnalyzeFile = analyzeSelect.value;
+      if (!csvFiles.length) {
+        select.innerHTML = '<option value="">暂无历史 CSV 文件</option>';
+        analyzeSelect.innerHTML = '<option value="">暂无可分析的 CSV 文件</option>';
+        await loadCsvPreview("");
+        return;
+      }
+      const preferred = outputBasename(preferredFile);
+      const selected = csvFiles.some((item) => item.file === preferred) ? preferred : csvFiles[0].file;
+      const options = csvFiles.map((item) => {
+        const csvStatus = item.csv_status || (item.stale ? "需重整" : "已整合");
+        return `<option value="${esc(item.file)}">${esc(item.file)} · ${esc(csvStatus)}</option>`;
+      }).join("");
+      select.innerHTML = options;
+      select.value = selected;
+      analyzeSelect.innerHTML = options;
+      analyzeSelect.value = csvFiles.some((item) => item.file === currentAnalyzeFile) ? currentAnalyzeFile : selected;
+      if (loadSelected) await loadCsvPreview(selected);
+    }
+
+    async function refreshResultFiles(preferredFile = "") {
+      const data = await api("/api/results");
+      resultFiles = data.files || [];
+      const select = $("stage-file");
+      const filterSelect = $("filter-stage-file");
+      if (!resultFiles.length) {
+        select.innerHTML = '<option value="">暂无采集结果文件</option>';
+        filterSelect.innerHTML = '<option value="">暂无可筛选的结果文件</option>';
+        return;
+      }
+      const preferred = outputBasename(preferredFile);
+      const selected = resultFiles.some((item) => item.file === preferred) ? preferred : resultFiles[0].file;
+      const options = resultFiles.map((item) => {
+        const kind = item.operation === "note_filter" ? "筛选结果" : "采集结果";
+        return `<option value="${esc(item.file)}">${esc(item.file)} · ${esc(kind)} · ${esc(item.csv_status || (item.csv_file ? "已整合" : "待整合"))}</option>`;
+      }).join("");
+      select.innerHTML = options; select.value = selected;
+      filterSelect.innerHTML = options; filterSelect.value = selected;
+    }
+
+    const workflowTypeLabels = { scrape: "脚本提取", filter: "笔记筛选", aggregate: "CSV 整理", analyze: "大模型分析" };
+    const makeWorkflowId = () => `wf_${crypto.randomUUID().replaceAll("-", "")}`;
+    const makeTaskId = () => `task_${crypto.randomUUID().replaceAll("-", "")}`;
+    function setWorkflowSaveState(text, error = false) {
+      const el = $("workflow-save-state"); el.textContent = text; el.className = `save-state${error ? " error" : ""}`;
+    }
+    function defaultWorkflow() {
+      return { id: makeWorkflowId(), name: "新工作流", enabled: false, schedule: { frequency: "daily", time: "09:00", weekday: 0 }, tasks: [] };
+    }
+    function currentWorkflow() {
+      return { id: state.activeWorkflowId, name: $("workflow-name").value.trim(), enabled: $("workflow-enabled").checked,
+        schedule: { frequency: $("workflow-frequency").value, time: $("workflow-time").value || "09:00", weekday: Number($("workflow-weekday").value) },
+        tasks: state.workflowTasks.map((task) => {
+          const copy = JSON.parse(JSON.stringify(task));
+          if (copy.type === "scrape") {
+            if (Array.isArray(copy.keywords)) copy.keywords = copy.keywords.filter((value) => state.keywords.includes(value));
+            if (Array.isArray(copy.users)) copy.users = copy.users.filter((value) => state.users.some((user) => user.profile_url === value));
+          }
+          return copy;
+        }) };
+    }
+    function renderWorkflowSelector() {
+      const select = $("workflow-select");
+      select.innerHTML = `<option value="">新工作流</option>${state.workflows.map((item) => `<option value="${esc(item.id)}">${esc(item.name)}${item.enabled ? " · 定时已启用" : ""}</option>`).join("")}`;
+      select.value = state.activeWorkflowId || "";
+    }
+    function selectWorkflow(workflow) {
+      const selected = workflow || defaultWorkflow();
+      state.activeWorkflowId = selected.id;
+      $("workflow-name").value = selected.name || "";
+      $("workflow-enabled").checked = !!selected.enabled;
+      $("workflow-frequency").value = selected.schedule?.frequency || "daily";
+      $("workflow-time").value = selected.schedule?.time || "09:00";
+      $("workflow-weekday").value = String(selected.schedule?.weekday ?? 0);
+      $("workflow-weekday-wrap").hidden = $("workflow-frequency").value !== "weekly";
+      state.workflowTasks = (selected.tasks || []).map((task) => JSON.parse(JSON.stringify(task)));
+      renderWorkflowSelector(); renderWorkflowTasks(); setWorkflowSaveState(workflow ? "已载入工作流" : "新工作流尚未保存");
+    }
+    async function loadWorkflows() {
+      const data = await api("/api/workflows");
+      state.workflows = data.workflows || []; state.keywords = data.keywords || state.keywords; state.users = data.users || state.users;
+      resultFiles = data.files || []; csvFiles = data.csv_files || csvFiles; state.workflowsLoaded = true;
+      const selected = state.workflows.find((item) => item.id === state.activeWorkflowId) || state.workflows[0];
+      selectWorkflow(selected || null);
+    }
+    function renderWorkflowTasks() {
+      const host = $("workflow-tasks");
+      if (!state.workflowTasks.length) { host.innerHTML = '<div class="empty-hint">尚未添加任务。请选择任务类型后添加。</div>'; return; }
+      host.innerHTML = state.workflowTasks.map((task, index) => {
+        const controls = `<div class="actions"><button class="btn btn-quiet btn-small" data-wf-up="${index}" ${index === 0 ? "disabled" : ""}>上移</button><button class="btn btn-quiet btn-small" data-wf-down="${index}" ${index === state.workflowTasks.length - 1 ? "disabled" : ""}>下移</button><button class="btn btn-danger btn-small" data-wf-remove="${index}">删除</button></div>`;
+        let body = "";
+        if (task.type === "scrape") {
+          const renderChecks = (kind, entries, chosen, labelKey, valueKey) => {
+            const checked = (entry) => chosen === null || chosen.includes(entry[valueKey]);
+            const rows = entries.length ? entries.map((entry) => `<label class="workflow-check"><input type="checkbox" data-wf-choice="${kind}" data-task="${index}" value="${esc(entry[valueKey])}" ${checked(entry) ? "checked" : ""}><span>${esc(entry[labelKey])}</span></label>`).join("") : '<span class="empty-hint">当前没有可选项</span>';
+            return `<div class="workflow-group"><div class="workflow-group-head"><strong>${kind === "keyword" ? "关键词" : "监控账号"}（${entries.length}）</strong><span class="actions"><button type="button" class="btn btn-quiet btn-small" data-wf-all="${kind}" data-task="${index}">全选</button><button type="button" class="btn btn-quiet btn-small" data-wf-none="${kind}" data-task="${index}">清空</button></span></div><div class="workflow-checks">${rows}</div></div>`;
+          };
+          body = `${renderChecks("keyword", state.keywords.map((value) => ({ name: value, value })), task.keywords, "name", "value")}${renderChecks("user", state.users.map((value) => ({ name: value.name || value.profile_url, value: value.profile_url })), task.users, "name", "value")}`;
+        } else {
+          const priorJson = state.workflowTasks.slice(0, index).some((item) => ["scrape", "filter"].includes(item.type));
+          const priorAggregate = state.workflowTasks.slice(0, index).some((item) => item.type === "aggregate");
+          const consumesJson = ["filter", "aggregate"].includes(task.type);
+          const canUseWorkflowSource = consumesJson ? priorJson : priorAggregate;
+          const availableFiles = consumesJson ? resultFiles : csvFiles;
+          const usesWorkflowSource = ["workflow", "workflow_all"].includes(task.source?.kind);
+          if (usesWorkflowSource && !canUseWorkflowSource) task.source = { kind: "file", file: availableFiles[0]?.file || "" };
+          if (task.source?.kind === "file" && !task.source.file) {
+            if (canUseWorkflowSource) task.source = { kind: "workflow" };
+            else if (availableFiles.length) task.source.file = availableFiles[0].file;
+          }
+          const source = task.source || { kind: canUseWorkflowSource ? "workflow" : "file", file: availableFiles[0]?.file || "" };
+          const sourceValue = ["workflow", "workflow_all"].includes(source.kind) ? source.kind : `file:${source.file || ""}`;
+          const generatedLabel = consumesJson ? "JSON" : "CSV";
+          const generatedOption = canUseWorkflowSource ? `<option value="workflow" ${sourceValue === "workflow" ? "selected" : ""}>使用本工作流前面生成的最新${generatedLabel}</option>` : "";
+          const mergeOption = consumesJson && priorJson ? `<option value="workflow_all" ${sourceValue === "workflow_all" ? "selected" : ""}>合并本工作流前面生成的全部 JSON</option>` : "";
+          const fileOptions = availableFiles.map((file) => {
+            const detail = consumesJson ? file.status : (file.stale ? "历史版本" : "可分析");
+            return `<option value="file:${esc(file.file)}" ${source.kind === "file" && source.file === file.file ? "selected" : ""}>指定已有文件：${esc(file.file)} · ${esc(detail)}</option>`;
+          }).join("");
+          const hasSelectedFile = source.kind === "file" && availableFiles.some((file) => file.file === source.file);
+          const missingFileOption = source.kind === "file" && source.file && !hasSelectedFile ? '<option value="" selected disabled>结果文件已不可用，请重新选择</option>' : "";
+          const emptyOption = !generatedOption && !mergeOption && !fileOptions ? '<option value="" selected disabled>暂无可用结果文件</option>' : "";
+          let sourceHint = "";
+          if (task.type === "filter") sourceHint = priorJson ? "选择最新 JSON 只筛选最近一步；选择合并会先合并此前全部采集与筛选结果，再统一执行当前筛选。" : "选择一个已有采集 JSON 文件作为筛选输入。";
+          else if (task.type === "aggregate") sourceHint = priorJson ? "选择最新 JSON 只整理最近一步；选择合并会整理此前全部采集与筛选结果，并按笔记去重。" : "选择一个已有采集或筛选 JSON 文件作为整理输入。";
+          else sourceHint = priorAggregate ? "选择工作流生成项会使用此前最近一次 CSV 整理产生的文件。" : "选择一个已有 CSV 文件作为分析输入。";
+          const sourceLabel = consumesJson ? "JSON 来源" : "CSV 来源";
+          const filterEditor = task.type === "filter" ? renderWorkflowFilterEditor(task, index) : "";
+          body = `<div class="settings-grid"><div class="field"><label>${sourceLabel}</label><select class="select-input" data-wf-source="${index}">${generatedOption}${mergeOption}${missingFileOption}${emptyOption}${fileOptions}</select></div></div><div class="card-desc">${sourceHint}</div>${filterEditor}`;
+        }
+        return `<div class="workflow-task"><div class="workflow-task-head"><div class="workflow-task-title">第 ${index + 1} 步 · ${workflowTypeLabels[task.type]}</div>${controls}</div>${body}</div>`;
+      }).join("");
+    }
+    async function saveWorkflow(auto = false) {
+      await saveConfigNow(true, !auto);
+      const workflow = currentWorkflow();
+      if (!workflow.name) throw new Error("请填写工作流名称。");
+      if (!workflow.tasks.length) throw new Error("请先添加至少一个任务。");
+      const workflows = [...state.workflows];
+      const index = workflows.findIndex((item) => item.id === workflow.id);
+      if (index >= 0) workflows[index] = workflow; else workflows.push(workflow);
+      const response = await api("/api/workflows", { method: "POST", body: JSON.stringify({ workflows }) });
+      state.workflows = response.workflows; state.activeWorkflowId = workflow.id; renderWorkflowSelector();
+      setWorkflowSaveState(auto ? "工作流已自动保存" : "工作流已保存"); return workflow;
+    }
+    async function autoSaveConfig() {
+      const numericIds = ["search-limit","user-limit","detail-user-limit","timeout","llm-images-limit","llm-frames-limit","llm-frame-interval","llm-image-edge","llm-video-seconds","llm-timeout"];
+      const incomplete = numericIds.find((id) => !$(id).value.trim() || !$(id).checkValidity());
+      if (incomplete) { setSaveState("填写完整有效的数值后会自动保存"); return; }
+      try {
+        setSaveState("正在自动保存…");
+        await saveConfig(true, false);
+        setSaveState("设置已自动保存", "ok");
+      } catch (error) {
+        setSaveState(`自动保存失败：${error.message}`, "error");
+      }
+    }
+    async function autoSaveWorkflow() {
+      const workflow = currentWorkflow();
+      if (!workflow.name) { setWorkflowSaveState("填写工作流名称后会自动保存"); return; }
+      if (!workflow.tasks.length) { setWorkflowSaveState("添加至少一个任务后会自动保存"); return; }
+      try {
+        setWorkflowSaveState("正在自动保存…");
+        await saveWorkflow(true);
+      } catch (error) {
+        setWorkflowSaveState(`自动保存失败：${error.message}`, true);
+      }
+    }
+    const configAutoSave = createDebouncedSaver(autoSaveConfig, 600);
+    const workflowAutoSave = createDebouncedSaver(autoSaveWorkflow, 800);
+    async function saveConfigNow(silent = false, refreshForm = true) {
+      configAutoSave.cancel();
+      return saveConfig(silent, refreshForm);
+    }
+    function markConfigChanged(alsoSaveWorkflow = false) {
+      setSaveState("更改将在片刻后自动保存…");
+      configAutoSave.schedule();
+      if (alsoSaveWorkflow) markWorkflowChanged();
+    }
+    function markWorkflowChanged() {
+      setWorkflowSaveState("更改将在片刻后自动保存…");
+      workflowAutoSave.schedule();
+    }
+    async function runWorkflowNow() {
+      try {
+        workflowAutoSave.cancel();
+        const workflow = await saveWorkflow();
+        const response = await api("/api/workflows/run", { method: "POST", body: JSON.stringify({ id: workflow.id }) });
+        toast(`工作流已排队：${response.job_id}`); await refreshRun();
+      } catch (error) { toast(error.message, "error"); setWorkflowSaveState(error.message, true); }
+    }
+
+    function displayRun(run) {
+      const status = run.status || "idle";
+      const origin = ["workflows", "scheduled"].includes(run.origin) ? "workflows" : "run";
+      const displaySummary = run.summary || (status === "idle" ? run.latest_run : null);
+      const failedTask = run.summary?.failed_task || run.workflow_execution?.failed_task || "";
+      const summaryStatus = run.summary?.status || (status === "idle" ? run.latest_run?.status : "");
+      const summaryOperation = run.summary?.operation || (status === "idle" ? run.latest_run?.operation : "");
+      const resultText = run.summary?.task_name || run.summary?.note ||
+        (summaryOperation === "note_filter" && (["succeeded", "partial"].includes(status) || ["succeeded", "partial"].includes(summaryStatus))
+          ? `筛选完成：保留 ${displaySummary?.output_note_count ?? displaySummary?.summary_note_count ?? 0} / ${displaySummary?.input_note_count ?? 0} 条笔记`
+          : "") ||
+        (status === "failed" && failedTask ? `${failedTask}失败` :
+          status === "queued" ? runStatusText("queued") : run.workflow_active ? "工作流执行中" :
+          summaryStatus ? runStatusText(summaryStatus) : runStatusText(status));
+      const outputName = outputBasename(displaySummary?.output_file);
+      const csvName = outputBasename(displaySummary?.summary_csv);
+      const failure = run.summary?.first_error || run.error || (status === "idle" ? run.latest_run?.first_error : "") || run.summary?.first_warning || (status === "idle" ? run.latest_run?.first_warning : "") || "";
+      const failureLabel = run.summary?.first_error || run.error || (status === "idle" && run.latest_run?.first_error) ? "失败原因：" : "运行提示：";
+      for (const surface of ["run", "workflows"]) {
+        $(`run-status-${surface}`).hidden = surface !== origin;
+        const badge = $(`run-badge-${surface}`);
+        badge.textContent = runStatusText(status); badge.className = `run-state ${status}`;
+        $(`run-started-${surface}`).textContent = formatSystemTime(run.started_at || (status === "idle" ? run.latest_run?.started_at : ""));
+        $(`run-result-${surface}`).textContent = resultText;
+        const errorBox = $(`run-error-${surface}`);
+        errorBox.hidden = !failure;
+        errorBox.textContent = failure ? `${failureLabel}${failure}` : "";
+        $(`run-log-${surface}`).textContent = run.operation === "workflow" ? (run.log_tail || JSON.stringify(run.workflow_execution || run.summary || {}, null, 2)) : (run.error || run.log_tail || (run.summary ? JSON.stringify(run.summary, null, 2) : "暂无运行日志。"));
+        const linkBox = $(`run-output-link-${surface}`);
+        if (outputName || csvName) {
+          const jsonLabel = summaryOperation === "note_filter" ? "下载筛选 JSON" : "下载原始 JSON";
+          const links = [outputName ? `<a class="link" href="/output/${encodeURIComponent(outputName)}">${jsonLabel}</a>` : "", csvName ? `<a class="link" href="/output/${encodeURIComponent(csvName)}">下载汇总 CSV</a>` : ""].filter(Boolean).join("　·　");
+          linkBox.hidden = false; linkBox.innerHTML = `结果文件：${links}`;
+        } else { linkBox.hidden = true; linkBox.textContent = ""; }
+      }
+      $("run-all").disabled = status === "queued" || status === "running";
+      $("scrape-selected").disabled = status === "queued" || status === "running";
+      $("filter-selected").disabled = status === "queued" || status === "running";
+      $("analyze-selected").disabled = status === "queued" || status === "running";
+      $("aggregate-selected").disabled = status === "queued" || status === "running";
+      $("workflow-run").disabled = status === "queued" || status === "running";
+      const wasActive = ["queued", "running"].includes(lastRunStatus);
+      updateNavWorkIndicator(origin, status, wasActive);
+      lastRunStatus = status;
+      if (status === "queued" || status === "running") {
+        if (!pollTimer) pollTimer = setInterval(refreshRun, 2500);
+      } else {
+        if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+        if (wasActive) {
+          refreshResultFiles(outputName).catch((error) => toast(error.message, "error"));
+          refreshCsvFiles(csvName || $("csv-file").value).catch((error) => toast(error.message, "error"));
+        }
+      }
+    }
+
+    async function refreshRun() {
+      try { displayRun(await api("/api/run/status")); } catch (error) { toast(error.message, "error"); }
+    }
+
+    async function runNow() {
+      try {
+        await saveConfigNow(true);
+        const response = await api("/api/run", { method: "POST", body: JSON.stringify({ origin: "run" }) });
+        toast(`脚本提取任务已排队：${response.job_id}`);
+        await refreshRun();
+      } catch (error) { toast(error.message, "error"); }
+    }
+
+    async function runAll() {
+      try {
+        await saveConfigNow(true);
+        const response = await api("/api/run-all", { method: "POST", body: JSON.stringify({ origin: "run" }) });
+        toast("全部环节任务已排队：" + response.job_id);
+        await refreshRun();
+      } catch (error) { toast(error.message, "error"); }
+    }
+
+    async function analyzeSelected() {
+      const file = $("analyze-csv-file").value;
+      if (!file) { toast("请先选择要分析的 CSV 文件", "error"); return; }
+      const button = $("analyze-selected"); button.disabled = true; button.textContent = "正在排队…";
+      try {
+        await saveConfigNow(true);
+        const response = await api("/api/analyze", { method: "POST", body: JSON.stringify({ file, origin: "run" }) });
+        toast(`大模型分析任务已排队：${response.job_id}`);
+        await refreshRun();
+      } catch (error) { toast(error.message, "error"); }
+      finally { button.textContent = "运行该环节"; await refreshRun(); }
+    }
+
+    async function checkDoctor() {
+      readFormIntoState();
+      const box = $("doctor-result"); box.hidden = false; box.textContent = "正在检查 OpenCLI 与浏览器桥接……";
+      try {
+        const result = await api("/api/doctor", { method: "POST", body: JSON.stringify(state.app_settings) });
+        box.textContent = `${result.ready ? "连接正常" : "连接未就绪"}\n${result.output || result.error || "无诊断输出"}`;
+        toast(result.ready ? "OpenCLI 浏览器连接正常" : "OpenCLI 尚未就绪", result.ready ? "" : "error");
+      } catch (error) { box.textContent = error.message; toast(error.message, "error"); }
+    }
+
+    async function updateDependencies() {
+      const button = $("update-dependencies");
+      const box = $("dependency-result");
+      const status = $("dependency-state");
+      readFormIntoState();
+      button.disabled = true;
+      button.textContent = "正在检查和更新…";
+      box.hidden = false;
+      box.textContent = "正在更新项目依赖并检查运行环境，请稍候……";
+      status.textContent = "处理中";
+      status.className = "save-state";
+      try {
+        const result = await api("/api/dependencies", { method: "POST", body: JSON.stringify(state.app_settings) });
+        const commandText = (step) => step?.output || step?.error || "无额外输出";
+        box.textContent = [
+          `Python：${result.python_version}`,
+          `requirements.txt 更新：${result.python_updated ? "成功" : "失败"}`,
+          commandText(result.pip_update),
+          `pip check：${result.pip_check?.ok ? "通过" : "未通过"}`,
+          commandText(result.pip_check),
+          `Node.js：${result.node?.version || result.node?.error || "未检测到"}`,
+          `OpenCLI 更新前：${result.opencli_before?.version || result.opencli_before?.error || "不可用"}`,
+          `OpenCLI 更新：${result.opencli_update?.status || "未执行"}`,
+          commandText(result.opencli_update),
+          `OpenCLI 当前版本：${result.opencli_after?.version || result.opencli_after?.error || "不可用"}`,
+          "依赖更新后请重启 WebUI，使当前进程重新加载已更新的依赖。",
+        ].join("\n");
+        const complete = result.python_updated && result.pip_check?.ok && result.node?.ok && result.opencli_update?.status === "updated" && result.opencli_after?.ok;
+        status.textContent = complete ? "依赖已更新" : "部分完成，请查看详情";
+        status.className = `save-state ${complete ? "ok" : "error"}`;
+        toast(complete ? "项目依赖检查与更新完成" : "依赖处理部分完成，请查看详情", complete ? "" : "error");
+      } catch (error) {
+        box.textContent = error.message;
+        status.textContent = "更新失败";
+        status.className = "save-state error";
+        toast(error.message, "error");
+      } finally {
+        button.disabled = false;
+        button.textContent = "检查并更新依赖";
+      }
+    }
+
+    document.querySelectorAll(".nav-button").forEach((button) => button.addEventListener("click", () => setPage(button.dataset.page)));
+    $("workflow-select").addEventListener("change", async () => {
+      const next = state.workflows.find((item) => item.id === $("workflow-select").value) || null;
+      await workflowAutoSave.flush();
+      selectWorkflow(next);
+    });
+    $("workflow-new").addEventListener("click", async () => {
+      await workflowAutoSave.flush();
+      selectWorkflow(null);
+    });
+    $("workflow-delete").addEventListener("click", async () => {
+      if (!state.activeWorkflowId || !state.workflows.some((item) => item.id === state.activeWorkflowId)) { toast("当前是尚未保存的新工作流"); return; }
+      await workflowAutoSave.flush();
+      if (!state.workflows.some((item) => item.id === state.activeWorkflowId)) return;
+      const workflows = state.workflows.filter((item) => item.id !== state.activeWorkflowId);
+      try {
+        const response = await api("/api/workflows", { method: "POST", body: JSON.stringify({ workflows }) });
+        state.workflows = response.workflows; selectWorkflow(state.workflows[0] || null); toast("工作流已删除");
+      } catch (error) { toast(error.message, "error"); }
+    });
+    $("workflow-frequency").addEventListener("change", () => { $("workflow-weekday-wrap").hidden = $("workflow-frequency").value !== "weekly"; markWorkflowChanged(); });
+    ["workflow-name","workflow-time","workflow-weekday","workflow-enabled"].forEach((id) => {
+      $(id).addEventListener("input", markWorkflowChanged);
+      $(id).addEventListener("change", markWorkflowChanged);
+    });
+    $("workflow-add-task").addEventListener("click", () => {
+      const type = $("workflow-new-task-type").value;
+      const hasPriorJson = state.workflowTasks.some((task) => ["scrape", "filter"].includes(task.type));
+      const hasPriorAggregate = state.workflowTasks.some((task) => task.type === "aggregate");
+      const consumesJson = ["filter", "aggregate"].includes(type);
+      const canUseWorkflowSource = consumesJson ? hasPriorJson : hasPriorAggregate;
+      const availableFiles = consumesJson ? resultFiles : csvFiles;
+      const task = type === "scrape"
+        ? { id: makeTaskId(), type, keywords: null, users: null }
+        : { id: makeTaskId(), type, source: { kind: canUseWorkflowSource ? "workflow" : "file", file: availableFiles[0]?.file || "" } };
+      if (type === "filter") {
+        task.note_filter = normalizeClientNoteFilter(ensureNoteFilter());
+        task.note_filter.enabled = true;
+        if (!task.note_filter.groups.length) task.note_filter.groups.push(createNoteFilterGroup());
+      }
+      if (type === "filter") {
+        const insertAt = state.workflowTasks.findIndex((item) => ["aggregate", "analyze"].includes(item.type));
+        if (insertAt >= 0) state.workflowTasks.splice(insertAt, 0, task);
+        else state.workflowTasks.push(task);
+      } else state.workflowTasks.push(task);
+      renderWorkflowTasks(); markWorkflowChanged();
+    });
+    $("workflow-tasks").addEventListener("click", (event) => {
+      const button = event.target.closest("button"); if (!button) return;
+      const filterAction = button.dataset.wfFilterAddGroup ?? button.dataset.wfFilterRemoveGroup ?? button.dataset.wfFilterAddCondition ?? button.dataset.wfFilterRemoveCondition;
+      if (filterAction !== undefined) {
+        const parts = filterAction.split(":").map(Number);
+        const task = state.workflowTasks[parts[0]];
+        if (button.hasAttribute("data-wf-filter-add-group")) {
+          if (task.note_filter.groups.length < noteFilterMaxGroups) task.note_filter.groups.push(createNoteFilterGroup());
+        } else if (button.hasAttribute("data-wf-filter-remove-group")) {
+          if (task.note_filter.groups.length > 1) task.note_filter.groups.splice(parts[1], 1);
+        } else if (button.hasAttribute("data-wf-filter-add-condition")) {
+          const group = task.note_filter.groups[parts[1]];
+          if (group.conditions.length < noteFilterMaxConditions) group.conditions.push(createNoteFilterCondition());
+        } else if (button.hasAttribute("data-wf-filter-remove-condition")) {
+          const group = task.note_filter.groups[parts[1]];
+          if (group.conditions.length > 1) group.conditions.splice(parts[2], 1);
+        }
+        renderWorkflowTasks(); markWorkflowChanged();
+        return;
+      }
+      const index = Number(button.dataset.wfUp ?? button.dataset.wfDown ?? button.dataset.wfRemove ?? button.dataset.wfAll ?? button.dataset.wfNone);
+      if (button.hasAttribute("data-wf-up") && index > 0) [state.workflowTasks[index - 1], state.workflowTasks[index]] = [state.workflowTasks[index], state.workflowTasks[index - 1]];
+      else if (button.hasAttribute("data-wf-down") && index < state.workflowTasks.length - 1) [state.workflowTasks[index + 1], state.workflowTasks[index]] = [state.workflowTasks[index], state.workflowTasks[index + 1]];
+      else if (button.hasAttribute("data-wf-remove")) state.workflowTasks.splice(index, 1);
+      else if (button.hasAttribute("data-wf-all") || button.hasAttribute("data-wf-none")) {
+        const taskIndex = Number(button.dataset.task); const kind = button.dataset.wfAll || button.dataset.wfNone;
+        state.workflowTasks[taskIndex][kind === "keyword" ? "keywords" : "users"] = button.hasAttribute("data-wf-all") ? null : [];
+      } else return;
+      renderWorkflowTasks(); markWorkflowChanged();
+    });
+    $("workflow-tasks").addEventListener("change", (event) => {
+      const el = event.target;
+      if (el.matches("[data-wf-choice]")) {
+        const task = state.workflowTasks[Number(el.dataset.task)]; const key = el.dataset.wfChoice === "keyword" ? "keywords" : "users";
+        const allValues = el.dataset.wfChoice === "keyword" ? state.keywords : state.users.map((user) => user.profile_url);
+        const choices = task[key] === null ? [...allValues] : [...task[key]];
+        task[key] = el.checked ? [...new Set([...choices, el.value])] : choices.filter((value) => value !== el.value);
+      } else if (el.matches("[data-wf-source]")) {
+        const index = Number(el.dataset.wfSource); const task = state.workflowTasks[index];
+        task.source = ["workflow", "workflow_all"].includes(el.value)
+          ? { kind: el.value }
+          : { kind: "file", file: el.value.startsWith("file:") ? el.value.slice(5) : "" };
+      } else if (el.matches("[data-wf-filter-field], [data-wf-filter-operator]")) {
+        const key = el.hasAttribute("data-wf-filter-field") ? el.dataset.wfFilterField : el.dataset.wfFilterOperator;
+        const [taskIndex, groupIndex, conditionIndex] = key.split(":").map(Number);
+        const condition = state.workflowTasks[taskIndex].note_filter.groups[groupIndex].conditions[conditionIndex];
+        if (el.hasAttribute("data-wf-filter-field")) condition.field = el.value;
+        else condition.operator = el.value;
+        renderWorkflowTasks();
+      } else return;
+      renderWorkflowTasks(); markWorkflowChanged();
+    });
+    $("workflow-tasks").addEventListener("input", (event) => {
+      const el = event.target;
+      if (!el.matches("[data-wf-filter-value]")) return;
+      const [taskIndex, groupIndex, conditionIndex] = el.dataset.wfFilterValue.split(":").map(Number);
+      const task = state.workflowTasks[taskIndex];
+      const condition = task.note_filter.groups[groupIndex].conditions[conditionIndex];
+      condition.value = el.value === "" ? 0 : Math.max(0, Math.min(2147483647, Math.trunc(Number(el.value) || 0)));
+      const summary = document.querySelector(`[data-wf-filter-summary="${taskIndex}"]`);
+      if (summary) summary.textContent = noteFilterExpression(task.note_filter);
+      markWorkflowChanged();
+    });
+    $("workflow-run").addEventListener("click", runWorkflowNow);
+    $("add-keyword").addEventListener("click", () => {
+      const value = $("keyword-input").value.trim(); if (!value) return;
+      if (state.keywords.includes(value)) { toast("该关键词已存在"); return; }
+      state.keywords.push(value); $("keyword-input").value = ""; renderKeywords(); markConfigChanged(true);
+    });
+    $("keyword-input").addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); $("add-keyword").click(); } });
+    $("keyword-list").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-remove-keyword]"); if (!button) return;
+      state.keywords.splice(Number(button.dataset.removeKeyword), 1); renderKeywords(); markConfigChanged(true);
+    });
+    $("add-user").addEventListener("click", () => {
+      state.users.push({ name:"", profile_url:"" }); renderUsers(); markConfigChanged(true);
+    });
+    $("users-body").addEventListener("input", () => markConfigChanged(true));
+    $("users-body").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-remove-user]"); if (!button) return;
+      state.users.splice(Number(button.dataset.removeUser), 1); renderUsers(); markConfigChanged(true);
+    });
+
+    $("reload-config").addEventListener("click", () => {
+      configAutoSave.cancel();
+      workflowAutoSave.cancel();
+      loadConfig().then(() => toast("已重新读取 input 文件")).catch((error) => toast(error.message, "error"));
+    });
+    $("run-all").addEventListener("click", runAll);
+    $("scrape-selected").addEventListener("click", runNow);
+    $("check-doctor").addEventListener("click", checkDoctor);
+    $("update-dependencies").addEventListener("click", updateDependencies);
+    $("llm-save-key").addEventListener("click", saveLlmKey);
+    $("llm-toggle-key").addEventListener("click", toggleLlmKeyVisibility);
+    $("llm-check-key").addEventListener("click", checkLlmKey);
+    $("llm-test").addEventListener("click", testLlmConnection);
+    $("llm-fetch-models").addEventListener("click", fetchLlmModels);
+    $("llm-model-select").addEventListener("change", () => { $("llm-model-custom").hidden = $("llm-model-select").value !== "__manual__"; markConfigChanged(); });
+    $("llm-model-custom").addEventListener("change", markConfigChanged);
+    $("llm-endpoint").addEventListener("change", () => { state.llm_models = []; renderLlmModelOptions([], ""); setSaveState("端点已更改，模型列表需重新获取"); });
+    $("llm-credential-id").addEventListener("input", updateKeyCommand);
+    ["llm-enabled","llm-endpoint","llm-credential-id","llm-auth-header","llm-auth-scheme","llm-audio-model","llm-model-select","llm-model-custom","llm-images-limit","llm-frames-limit","llm-frame-interval","llm-image-edge","llm-video-seconds","llm-timeout","llm-ffmpeg-bin"].forEach((id) => {
+      $(id).addEventListener("input", markConfigChanged);
+      $(id).addEventListener("change", markConfigChanged);
+    });
+    $("csv-filter-enabled").addEventListener("change", () => {
+      const noteFilter = ensureNoteFilter();
+      noteFilter.enabled = $("csv-filter-enabled").checked;
+      if (noteFilter.enabled && !noteFilter.groups.length) noteFilter.groups.push(createNoteFilterGroup());
+      renderNoteFilter(); markConfigChanged();
+    });
+    $("csv-filter-add-group").addEventListener("click", () => {
+      const noteFilter = ensureNoteFilter();
+      if (noteFilter.groups.length >= noteFilterMaxGroups) return;
+      noteFilter.groups.push(createNoteFilterGroup());
+      renderNoteFilter(); markConfigChanged();
+    });
+    $("csv-filter-groups").addEventListener("click", (event) => {
+      const button = event.target.closest("button"); if (!button) return;
+      const noteFilter = ensureNoteFilter();
+      if (button.dataset.filterAddCondition !== undefined) {
+        const group = noteFilter.groups[Number(button.dataset.filterAddCondition)];
+        if (group.conditions.length < noteFilterMaxConditions) group.conditions.push(createNoteFilterCondition());
+      } else if (button.dataset.filterRemoveCondition !== undefined) {
+        const [groupIndex, conditionIndex] = button.dataset.filterRemoveCondition.split(":").map(Number);
+        const group = noteFilter.groups[groupIndex];
+        if (group.conditions.length > 1) group.conditions.splice(conditionIndex, 1);
+      } else if (button.dataset.filterRemoveGroup !== undefined) {
+        const groupIndex = Number(button.dataset.filterRemoveGroup);
+        if (noteFilter.groups.length > 1) noteFilter.groups.splice(groupIndex, 1);
+      } else return;
+      renderNoteFilter(); markConfigChanged();
+    });
+    $("csv-filter-groups").addEventListener("change", (event) => {
+      const el = event.target;
+      if (!el.matches("[data-filter-field], [data-filter-operator]")) return;
+      const key = el.hasAttribute("data-filter-field") ? el.dataset.filterField : el.dataset.filterOperator;
+      const [groupIndex, conditionIndex] = key.split(":").map(Number);
+      const condition = ensureNoteFilter().groups[groupIndex].conditions[conditionIndex];
+      if (el.hasAttribute("data-filter-field")) condition.field = el.value;
+      else condition.operator = el.value;
+      renderNoteFilter(); markConfigChanged();
+    });
+    $("csv-filter-groups").addEventListener("input", (event) => {
+      const el = event.target;
+      if (!el.matches("[data-filter-value]")) return;
+      const [groupIndex, conditionIndex] = el.dataset.filterValue.split(":").map(Number);
+      const condition = ensureNoteFilter().groups[groupIndex].conditions[conditionIndex];
+      condition.value = el.value === "" ? 0 : Math.max(0, Math.min(2147483647, Math.trunc(Number(el.value) || 0)));
+      updateNoteFilterExpressionOnly(); markConfigChanged();
+    });
+    $("csv-file").addEventListener("change", (event) => loadCsvPreview(event.target.value));
+    $("refresh-result-list").addEventListener("click", () => refreshCsvFiles($("csv-file").value).catch((error) => toast(error.message, "error")));
+    $("filter-selected").addEventListener("click", async () => {
+      const file = $("filter-stage-file").value;
+      if (!file) { toast("请选择一个采集 JSON 文件", "error"); return; }
+      const button = $("filter-selected"); button.disabled = true; button.textContent = "正在排队…";
+      try {
+        await saveConfigNow(true);
+        const response = await api("/api/filter", { method: "POST", body: JSON.stringify({ file, origin: "run" }) });
+        toast(`笔记筛选任务已排队：${response.job_id}`);
+        await refreshRun();
+      } catch (error) { toast(error.message, "error"); }
+      finally { button.textContent = "运行该环节"; await refreshRun(); }
+    });
+    $("aggregate-selected").addEventListener("click", async () => {
+      const file = $("stage-file").value;
+      if (!file) { toast("请选择一个采集 JSON 文件", "error"); return; }
+      const button = $("aggregate-selected"); button.disabled = true; button.textContent = "正在整合…";
+      try {
+        const result = await api("/api/aggregate", { method: "POST", body: JSON.stringify({ file, origin: "run" }) });
+        const runState = await api("/api/run/status");
+        const jobId = result.job_id || (runState.operation === "csv_aggregation" ? runState.job_id : "");
+        if (jobId) toast(`CSV 整理任务已提交：${jobId}`);
+        else toast("CSV 整理接口未返回任务编号，且运行状态未确认；请重启当前项目的 WebUI。", "error");
+        await refreshRun();
+      } catch (error) { toast(error.message, "error"); }
+      finally { button.textContent = "运行该环节"; await refreshRun(); }
+    });
+    $("analyze-selected").addEventListener("click", analyzeSelected);
+    ["search-limit","sort","note-type","publish-time","scope","location","user-limit","detail-user-limit","timeout","creator-detail","seen-notes-enabled","opencli-bin","opencli-profile"].forEach((id) => {
+      $(id).addEventListener("input", markConfigChanged);
+      $(id).addEventListener("change", markConfigChanged);
+    });
+
+    window.addEventListener("pagehide", clearLlmKeyInput);
+    loadConfig().then(() => { refreshResultFiles().catch((error) => toast(error.message, "error")); refreshCsvFiles().catch((error) => toast(error.message, "error")); loadWorkflows().catch((error) => toast(error.message, "error")); checkLlmKey(); }).catch((error) => { $("global-state").textContent = "配置读取失败"; toast(error.message, "error"); });
+    refreshRun();
+  </script>
+</body>
+</html>
